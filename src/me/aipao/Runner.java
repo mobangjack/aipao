@@ -15,12 +15,22 @@
  */
 package me.aipao;
 
-import java.util.Map;
-
 import com.google.gson.Gson;
 
 /**
- * @author 帮杰
+ * @author 帮杰<br>
+ * 日期：2016年2月22日——6月26日<br>
+ * 有效时间：<br>
+ * <ul>
+ * <li>早上6:00—8:30<br>
+ * <li>下午16:00—18:30<br>
+ * <li>晚上20:00—23:00<br>
+ * </ul>
+ * 说明：<br>
+ * <ul>
+ * <li>指定时间外系统关闭，成绩不记录<br>
+ * <li>每天只记录一次有效长跑成绩，一天内跑多次的按一次计算<br>
+ * <ul>
  */
 @SuppressWarnings("rawtypes")
 public class Runner implements Runnable {
@@ -30,7 +40,7 @@ public class Runner implements Runnable {
 	
 	public static final String API_ROOT_URL = "http://client2.aipao.me/api/";
 	
-	public static final String IMEI = "42a8428a4a284f1591333be4c180985f";
+	public static final String IMEI = "2ea1bc86fc4c4050a36a9126bfdcb770";
 	
 	public static final String LOGIN_URL = API_ROOT_URL
 			+ "%7Btoken%7D/QM_Users/Login_Android?"
@@ -58,18 +68,16 @@ public class Runner implements Runnable {
 			+ "/QM_Runs/EndRunForSchool?"
 			+ "S1="
 			+ RUNID
-			+ "&S2=jppp&S3=nppp&"
-			+ "S4=zjo&S5=nppn&S6=&S7=1&S8=pinwrjdlzo";
+			+ "&S2=cuuu&S3=xuuu&"
+			+ "S4=csc&S5=xuus&S6=&S7=1&S8=utxsocwdjy";
+	
 	
 	Gson gson = new Gson();
 	
-	public Runner() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public void run() {
 		
+		/*
 		System.out.println("--------------------Login--------------------");
 		String url = LOGIN_URL;
 		System.out.println("url:"+url);
@@ -79,6 +87,7 @@ public class Runner implements Runnable {
 		Map map = gson.fromJson(s, Map.class);
 		Map data = (Map) map.get("Data");
 		final String token = (String) data.get("Token");
+		
 		
 		System.out.println("--------------------Get User Info--------------------");
 		url = GET_INFO_URL.replace(TOKEN, token);
@@ -91,6 +100,7 @@ public class Runner implements Runnable {
 		System.out.println("url:"+url);
 		s = HttpUtil.get(url);
 		System.out.println(s);
+		
 		
 		System.out.println("--------------------Start School Run--------------------");
 		url = START_RUN_URL.replace(TOKEN, token);
@@ -105,7 +115,24 @@ public class Runner implements Runnable {
 		System.out.println("--------------------Stop School Run---------------------");
 		url = STOP_RUN_URL.replace(TOKEN, token).replace(RUNID, runId);
 		System.out.println("url:"+url);
+		
+		try {Thread.sleep(8*3600*1000);} catch (InterruptedException e) {}
+		
 		s = HttpUtil.get(url);
+		System.out.println(s);
+		*/
+		/*
+		System.out.println("--------------------Stop School Run---------------------");
+		url = STOP_RUN_URL.replace(TOKEN, token).replace(RUNID, runId);
+		System.out.println("url:"+url);
+		s = HttpUtil.get(url);
+		System.out.println(s);
+		*/
+		
+		
+		String url = "http://client2.aipao.me/api/f7e37acb66af419dac3b4ad2e1f19770/QM_Runs/EndRunForSchool?S1=aae9021849e04507804fcffffdfa9a81&S2=cuuu&S3=xuuu&S4=csc&S5=xuus&S6=&S7=1&S8=utxsocwdjy";
+		System.out.println("url:"+url);
+		String s = HttpUtil.get(url);
 		System.out.println(s);
 		
 	}
