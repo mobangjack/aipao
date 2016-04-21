@@ -15,7 +15,12 @@
  */
 package me.aipao;
 
-import com.google.gson.Gson;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import me.aipao.db.Dao;
+import me.aipao.model.TimePoint;
 
 /**
  * @author 帮杰<br>
@@ -32,119 +37,48 @@ import com.google.gson.Gson;
  * <li>每天只记录一次有效长跑成绩，一天内跑多次的按一次计算<br>
  * <ul>
  */
-@SuppressWarnings("rawtypes")
-public class Runner implements Runnable {
+public class Runner extends TimerTask {
+	
+	private Timer timer;
+	private TimePoint timePoint;
+	
+	class PullTask extends TimerTask {
 
-	public static final String TOKEN = "TOKEN";
-	public static final String RUNID = "RUNID";
+		@Override
+		public void run() {
+			List<Run> runs = Dao.me.getRuns();
+			for (Run run : runs) {
+				if (run.done()) {
+					
+				}
+			}
+			
+		}
+		
+	}
 	
-	public static final String API_ROOT_URL = "http://client2.aipao.me/api/";
-	
-	public static final String IMEI = "2ea1bc86fc4c4050a36a9126bfdcb770";
-	
-	public static final String LOGIN_URL = API_ROOT_URL
-			+ "%7Btoken%7D/QM_Users/Login_Android?"
-			+ "IMEICode="
-			+ IMEI;
-	
-	public static final String GET_INFO_URL = API_ROOT_URL
-			+ TOKEN
-			+ "/QM_Users/GetLoginInfoByUserId";
-	
-	public static final String SET_LOC_URL = API_ROOT_URL
-			+ TOKEN
-			+ "/QM_User_Field/SetLastLatLngByField?"
-			+ "UserId=27187&"
-			+ "FieldId=0&Lat=30.545273&Lng=114.365715";
-	
-	public static final String START_RUN_URL = API_ROOT_URL
-			+ TOKEN
-			+ "/QM_Runs/StartRunForSchool?"
-			+ "Lat=30.544746&Lng=114.366612&RunType=1&RunMode=1&FUserId=0&"
-			+ "Level_Length=2000&IsSchool=1";
-	
-	public static final String STOP_RUN_URL = API_ROOT_URL
-			+ TOKEN
-			+ "/QM_Runs/EndRunForSchool?"
-			+ "S1="
-			+ RUNID
-			+ "&S2=cuuu&S3=xuuu&"
-			+ "S4=csc&S5=xuus&S6=&S7=1&S8=utxsocwdjy";
-	
-	
-	Gson gson = new Gson();
+	class PushTask extends TimerTask {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 	
 	@Override
 	public void run() {
-		
-		/*
-		System.out.println("--------------------Login--------------------");
-		String url = LOGIN_URL;
-		System.out.println("url:"+url);
-		String s = HttpUtil.get(url);
-		System.out.println(s);
-		
-		Map map = gson.fromJson(s, Map.class);
-		Map data = (Map) map.get("Data");
-		final String token = (String) data.get("Token");
-		
-		
-		System.out.println("--------------------Get User Info--------------------");
-		url = GET_INFO_URL.replace(TOKEN, token);
-		System.out.println("url:"+url);
-		s = HttpUtil.get(url);
-		System.out.println(s);
-		
-		System.out.println("--------------------Set Last Location--------------------");
-		url = SET_LOC_URL.replace(TOKEN, token);
-		System.out.println("url:"+url);
-		s = HttpUtil.get(url);
-		System.out.println(s);
-		
-		
-		System.out.println("--------------------Start School Run--------------------");
-		url = START_RUN_URL.replace(TOKEN, token);
-		System.out.println("url:"+url);
-		s = HttpUtil.get(url);
-		System.out.println(s);
-		
-		map = gson.fromJson(s, Map.class);
-		data = (Map) map.get("Data");
-		String runId = (String) data.get("RunId");
-		
-		System.out.println("--------------------Stop School Run---------------------");
-		url = STOP_RUN_URL.replace(TOKEN, token).replace(RUNID, runId);
-		System.out.println("url:"+url);
-		
-		try {Thread.sleep(8*3600*1000);} catch (InterruptedException e) {}
-		
-		s = HttpUtil.get(url);
-		System.out.println(s);
-		*/
-		/*
-		System.out.println("--------------------Stop School Run---------------------");
-		url = STOP_RUN_URL.replace(TOKEN, token).replace(RUNID, runId);
-		System.out.println("url:"+url);
-		s = HttpUtil.get(url);
-		System.out.println(s);
-		*/
-		
-		
-		String url = "http://client2.aipao.me/api/f7e37acb66af419dac3b4ad2e1f19770/QM_Runs/EndRunForSchool?S1=aae9021849e04507804fcffffdfa9a81&S2=cuuu&S3=xuuu&S4=csc&S5=xuus&S6=&S7=1&S8=utxsocwdjy";
-		System.out.println("url:"+url);
-		String s = HttpUtil.get(url);
-		System.out.println(s);
-		
+		List<Run> runs = Dao.me.getRuns();
+		for (Run run : runs) {
+			if (run.done()) {
+				
+			}
+		}
 	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
-		Runner runner = new Runner();
-		runner.run();
-		
+	
+	public void stop() {
+		List<Run> runs = Dao.me.getRuns();
 	}
 	
 }

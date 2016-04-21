@@ -112,7 +112,7 @@ public class HttpUtil {
 		conn.setReadTimeout(19000);
 		
 		//conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-		//conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36");
+		//conn.setRequestProperty("Cycle-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36");
 		
 		if (headers != null && !headers.isEmpty())
 			for (Entry<String, String> entry : headers.entrySet())
