@@ -15,12 +15,15 @@
  */
 package me.aipao;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Map;
 
-import me.aipao.db.Dao;
-import me.aipao.model.TimePoint;
+import me.aipao.model.Run;
+import me.aipao.util.JsonUtil;
+import me.aipao.util.RandomUtil;
+
 
 /**
  * @author 帮杰<br>
@@ -37,48 +40,89 @@ import me.aipao.model.TimePoint;
  * <li>每天只记录一次有效长跑成绩，一天内跑多次的按一次计算<br>
  * <ul>
  */
-public class Runner extends TimerTask {
+@SuppressWarnings({"rawtypes","unchecked"})
+public class Runner implements Runnable {
 	
-	private Timer timer;
-	private TimePoint timePoint;
-	
-	class PullTask extends TimerTask {
-
-		@Override
-		public void run() {
-			List<Run> runs = Dao.me.getRuns();
-			for (Run run : runs) {
-				if (run.done()) {
-					
-				}
-			}
-			
-		}
-		
-	}
-	
-	class PushTask extends TimerTask {
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			
-		}
-		
+	public boolean isInDuty() {
+		int hours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+		return ((hours >= 6 && hours <= 8) || (hours >= 16 && hours <= 18) || (hours >= 20 && hours <= 22));
 	}
 	
 	@Override
 	public void run() {
-		List<Run> runs = Dao.me.getRuns();
+		if (!isInDuty()) {
+			return;
+		}
+		System.out.println("Runner is in duty...");
+		List<Run> runs = Run.dao.find("select * from run where TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
 		for (Run run : runs) {
-			if (run.done()) {
+			
+			if (run.getState() != 1) {
 				
+				String result = HttpMgr.me.login(run.getImei());
+				
+				Map<String, Object> map = JsonUtil.parse(result);
+				
+				Map<String, Object> data = (Map) map.get("Data");
+				
+				//{"Success":false,"ErrCode":7,"ErrMsg":"无此验证码"}
+				if (data == null) {
+					run.delete();
+					continue;
+				}
+				
+				String token = (String) data.get("Token");
+				
+				Integer userId = (Integer) data.get("UserId");
+				
+				result = HttpMgr.me.setLastLatLng(token, userId, run.getFieldId(), run.getLastLat(), run.getLastLng());
+				
+				result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
+				
+				map = JsonUtil.parse(result);
+				
+				//Power weak
+				data = (Map) map.get("Data");
+				
+				String runId = (String) data.get("RunId");
+				Integer fieldId = (Integer) data.get("FieldId");
+				
+				Integer coins = 2000;
+				Integer scores = 5000;
+				Integer times = RandomUtil.nextInt(480, 600);
+				Integer length = 2000;
+				
+				run.setToken(token);
+				run.setUserId(userId);
+				run.setRunId(runId);
+				run.setFieldId(fieldId);
+				run.setScores(scores);
+				run.setCoins(coins);
+				run.setTimes(times);
+				run.setLength(length);
+				run.setState(1);
+				run.setMsg(result);
+				run.setStartTime(new Date());
+				run.setLastModify(new Date());
+				run.update();
+				
+			}else if (new Date().getTime()-run.getStartTime().getTime() >= run.getTimes()*1000) {
+				
+				String result = HttpMgr.me.endSchoolRun(run.getToken(), run.getRunId(), run.getScores(), run.getCoins(), run.getTimes(), run.getLength());
+				
+				run.setState(0);
+				run.setMsg(result);
+				run.setEndTime(new Date());
+				run.setLastModify(new Date());
+				run.update();
+				
+			}else {
+				run.setMsg("pending");
+				run.setLastModify(new Date());
+				run.update();
 			}
+			
 		}
 	}
-	
-	public void stop() {
-		List<Run> runs = Dao.me.getRuns();
-	}
-	
+
 }

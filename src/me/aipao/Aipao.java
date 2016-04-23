@@ -15,44 +15,81 @@
  */
 package me.aipao;
 
-import java.util.Timer;
+import me.aipao.model._MappingKit;
 
-import me.aipao.db.C3p0;
-import me.aipao.db.DB;
-import me.aipao.db.Dao;
-import me.aipao.model.DutyCycle;
-import me.aipao.util.Prop;
+import com.jfinal.config.Constants;
+import com.jfinal.config.Handlers;
+import com.jfinal.config.Interceptors;
+import com.jfinal.config.JFinalConfig;
+import com.jfinal.config.Plugins;
+import com.jfinal.config.Routes;
+import com.jfinal.core.JFinal;
+import com.jfinal.json.FastJsonFactory;
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.c3p0.C3p0Plugin;
+import com.jfinal.plugin.ehcache.EhCachePlugin;
+import com.jfinal.plugin.scheduler.SchedulerPlugin;
 
 /**
- * @author 帮杰
+ * @author 帮杰<br>
+ * 日期：2016年2月22日——6月26日<br>
+ * 有效时间：<br>
+ * <ul>
+ * <li>早上6:00—8:30<br>
+ * <li>下午16:00—18:30<br>
+ * <li>晚上20:00—23:00<br>
+ * </ul>
+ * 说明：<br>
+ * <ul>
+ * <li>指定时间外系统关闭，成绩不记录<br>
+ * <li>每天只记录一次有效长跑成绩，一天内跑多次的按一次计算<br>
+ * <ul>
  */
-public class Aipao {
+public class Aipao extends JFinalConfig {
 
-	private Timer timer;
-	private DutyCycle dutyCycle;
-	
-	private Thread thread;
-	private Prop prop;
-	
-	private DB db;
-	private Dao dao;
-	private Runner runner;
-	
 	public Aipao() {
-		dutyCycle = DutyCycle.parse("2016/2/22-2016/6/26", "6:00-8:30;16:00-18:30;20:00-23:00");
-		prop = new Prop("aipao.propertiies");
-		db = new C3p0(prop.get("jdbcUrl"), prop.get("user"), prop.get("password"), prop.get("driverClass"));
-		dao = new Dao(db);
-		runner = new Runner();
-		thread = new Thread(runner);
+		loadPropertyFile("config.txt");
 	}
-	
-	public void start() {
-		thread.start();
+
+	@Override
+	public void configConstant(Constants me) {
+		me.setJsonFactory(new FastJsonFactory());
+		me.setDevMode(Const.JF.devMode);
 	}
-	
+
+	@Override
+	public void configRoute(Routes me) {
+		me.add("user", UserController.class);
+		me.add("run", RunController.class);
+	}
+
+	@Override
+	public void configPlugin(Plugins me) {
+		C3p0Plugin c3p0 = new C3p0Plugin(Const.Jdbc.url, Const.Jdbc.user, Const.Jdbc.pass);
+		me.add(c3p0);
+		
+		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0);
+		arp.setShowSql(true);
+		_MappingKit.mapping(arp);
+		me.add(arp);
+		
+		me.add(new EhCachePlugin());
+		
+		me.add(new SchedulerPlugin("runner.txt"));
+	}
+
+	@Override
+	public void configInterceptor(Interceptors me) {
+		me.addGlobalActionInterceptor(new UserInterceptor());
+	}
+
+	@Override
+	public void configHandler(Handlers me) {
+		// TODO Auto-generated method stub
+	}
+
 	public static void main(String[] args) {
-		Aipao aipao = new Aipao();
-		aipao.start();
+		JFinal.start("webapp", 8080, "/", 5);
 	}
+
 }

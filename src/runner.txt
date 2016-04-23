@@ -1,0 +1,15 @@
+#是否启用该任务
+runner.enable=true
+#任务类名
+runner.class=me.aipao.Runner
+#任务类型以及表达式
+#runner.type=cron
+#runner.expr=* * * * *
+
+#每隔480秒执行一次
+runner.type=fixedRate
+runner.expr=480
+
+#每隔5秒(任务一个接着一个)执行一次
+#runner.type=fixedDelay
+#runner.expr=5

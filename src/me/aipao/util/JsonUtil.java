@@ -18,18 +18,22 @@ package me.aipao.util;
 import java.util.List;
 import java.util.Map;
 
+import com.jfinal.json.Json;
+
 
 /**
- * Node can resolve JSON path and extract the target data from a JsonObject directly.
+ * JsonUtil can resolve JSON path and extract the target data from a JsonObject directly.
  * This is helpful when what you need in a JsonObject is just a piece of data.<br>
  * @author 帮杰
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class Node {
+public class JsonUtil {
 
-	private Node() {}
+	public static Map<String, Object> parse(String s) {
+		return Json.getJson().parse(s, Map.class);
+	}
 	
-	private static <T> T nextNode(Map currentNode, String path) {
+	public static <T> T nextNode(Map currentNode, String path) {
 		if (path.matches("\\w+\\[\\d+\\]")) {
 			String key = path.substring(0,path.indexOf('['));
 			List list = (List) currentNode.get(key);
@@ -40,7 +44,7 @@ public class Node {
 		}
 	}
 	
-	public static <T> T get(Map root,String path) {
+	public static <T> T getNode(Map root,String path) {
 		String[] array = path.replaceAll("\\s", "").split("\\.");
 		Map<String, Object> currentNode = root;
 		for (int i = 0; i < array.length-1; i++) {

@@ -13,46 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.util;
+package me.aipao;
 
-import java.util.HashMap;
-import java.util.Map;
+import me.aipao.model.User;
 
-import com.google.gson.Gson;
+import com.jfinal.core.Controller;
 
 /**
  * @author 帮杰
  */
-@SuppressWarnings({"unchecked"})
-public class Json {
+public class BaseController extends Controller {
 
-	private Map<String, Object> map;
+	public User getUser() {
+		return getAttr("user");
+	}
 	
-	public Json() {
-		map = new HashMap<String, Object>();
+	public void success(String msg, Object data) {
+		Result.success(msg, data).render(this);
+	}
+	
+	public void success(Object data) {
+		Result.create(0, "ok", data).render(this);
+	}
+	
+	public void success() {
+		Result.success("ok").render(this);
+	}
+	
+	public void failure(String msg) {
+		Result.failure(msg).render(this);
+	}
+	
+	public void failure() {
+		Result.failure("err").render(this);
 	}
 
-	public Json(String json) {
-		map = new Gson().fromJson(json, Map.class);
-	}
-	
-	public Json put(String key, Object value) {
-		map.put(key, value);
-		return this;
-	}
-	
-	public <T> T get(String key) {
-		return (T) Node.get(map, key);
-	}
-	
-	public <T> T get(String key, T defaultValue) {
-		T target = get(key);
-		return target==null?defaultValue:target;
-	}
-	
-	@Override
-	public String toString() {
-		return new Gson().toJson(map);
-	}
-	
 }

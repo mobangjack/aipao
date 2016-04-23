@@ -1,0 +1,70 @@
+	public static final String TOKEN = "TOKEN";
+	public static final String RUNID = "RUNID";
+	
+	public static final String API_ROOT_URL = "http://client2.aipao.me/api/";
+	
+	public static final String IMEI = "2ea1bc86fc4c4050a36a9126bfdcb770";
+	
+	public static final String LOGIN_URL = API_ROOT_URL
+			+ "%7Btoken%7D/QM_Users/Login_Android?"
+			+ "IMEICode="
+			+ IMEI;
+	
+	public static final String GET_INFO_URL = API_ROOT_URL
+			+ TOKEN
+			+ "/QM_Users/GetLoginInfoByUserId";
+	
+	public static final String SET_LOC_URL = API_ROOT_URL
+			+ TOKEN
+			+ "/QM_User_Field/SetLastLatLngByField?"
+			+ "UserId=27187&"
+			+ "FieldId=0&Lat=30.545273&Lng=114.365715";
+	
+	public static final String START_RUN_URL = API_ROOT_URL
+			+ TOKEN
+			+ "/QM_Runs/StartRunForSchool?"
+			+ "Lat=30.544746&Lng=114.366612&RunType=1&RunMode=1&FUserId=0&"
+			+ "Level_Length=2000&IsSchool=1";
+	
+	/**
+	 * 路程：2003.0	用时：8分55秒	有效路程：2000.0
+	 * S5=2003
+	 * S4=525
+	 * 
+	 * S1=RUNID
+	 * S2=SCORES,length=4
+	 * S3=GoldCoins,length=4
+	 * S4=Times,length=3
+	 * S5=LENGTH,length=4
+	 * S6=,length=0
+	 * S7=1,length=1(IsSchoolRun?)
+	 * S8=EncryptKey,length=10
+	 * public String EncryptKey()
+	  {
+		String str1 = "abcdefghijklmnopqrstuvwxyz";
+		String str2 = "";
+		for (int i = 0; ; i++)
+		{
+		  if (i >= 10)
+		    return str2;
+		  int j = this.random.nextInt(str1.length());
+		  str2 = str2 + str1.charAt(j);
+		  str1 = str1.replace(str1.charAt(j), "");
+		}
+		return str2;
+	  }
+	 */
+	public static final String STOP_RUN_URL = API_ROOT_URL
+			+ TOKEN
+			+ "/QM_Runs/EndRunForSchool?"
+			+ "S1="
+			+ RUNID + "&"
+			+ "S2=cuuu&"
+			+ "S3=xuuu&"
+			+ "S4=csd&"
+			+ "S5=xuus&"
+			+ "S6=&"
+			+ "S7=1&"
+			+ "S8=utxsocwdjy";
+	
+	

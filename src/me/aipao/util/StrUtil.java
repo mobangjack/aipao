@@ -15,13 +15,19 @@
  */
 package me.aipao.util;
 
+import java.util.UUID;
+
 /**
  * A small String tool kit.
  * @author 帮杰
  *
  */
-public class Str {
+public class StrUtil {
 
+	public static String uuid() {
+		return UUID.randomUUID().toString().replace("-", "");
+	}
+	
 	public static boolean isBlank(String s) {
 		return s==null||s.trim().equals("");
 	}

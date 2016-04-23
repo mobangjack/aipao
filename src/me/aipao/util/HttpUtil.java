@@ -1,4 +1,4 @@
-package me.aipao;
+package me.aipao.util;
 /**
  * Copyright (c) 2011-2015, Mobangjack 莫帮杰 (mobangjack@foxmail.com).
  *
@@ -140,13 +140,14 @@ public class HttpUtil {
 			return readResponseString(conn);
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 		finally {
 			if (conn != null) {
 				conn.disconnect();
 			}
 		}
+		return null;
 	}
 	
 	/**
@@ -228,7 +229,7 @@ public class HttpUtil {
 			return sb.toString();
 		}
 		catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 		finally {
 			if (inputStream != null) {
@@ -239,6 +240,7 @@ public class HttpUtil {
 				}
 			}
 		}
+		return null;
 	}
 	
 	/**

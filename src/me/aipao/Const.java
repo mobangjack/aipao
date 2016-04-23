@@ -15,25 +15,24 @@
  */
 package me.aipao;
 
+import com.jfinal.kit.Prop;
+import com.jfinal.kit.PropKit;
+
 /**
  * @author 帮杰
  */
 public interface Const {
 
-	String ApiRootUrl = "http://client2.aipao.me/api/";
-	String WeiXinAppID = "wx668004190386482e";
+	Prop cfg = PropKit.use("config.txt");
 	
-	String IMEI = "2ea1bc86fc4c4050a36a9126bfdcb770";
-	
-	interface Grade {
-		Integer Score = 5000;
-		Integer GoldCoins = 2000;
-		Integer Times = 535;
-		Integer Len = 2000;
+	interface JF {
+		boolean devMode = cfg.getBoolean("jfinal.devMode", false);
 	}
 	
-	interface RunState {
-		String Running = "running";
-		String Stopped = "stopped";
+	interface Jdbc {
+		String url = cfg.get("jdbc.url");
+		String user = cfg.get("jdbc.user");
+		String pass = cfg.get("jdbc.pass");
 	}
+	
 }

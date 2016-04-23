@@ -1,0 +1,36 @@
+#JFinal
+jfinal.devMode = true
+
+#Runner HttpMgr
+httpMgr.rootUrl = http://client2.aipao.me/api/
+
+#Database
+jdbc.url = jdbc:mysql://localhost/aipao?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+jdbc.user = bj
+jdbc.pass = 1314233
+jdbc.driver = com.mysql.jdbc.Driver
+
+#Qiniu cloud storage
+qiniu.bucket = twogen
+qiniu.appkey = T0rTJsvQw1pp6lJVD6yCn27fAY16gO4qa6rbd1NL
+qiniu.secret = um5CS5xhnsPCxbpL0Pg2Z-7o3P5Pm4Kufr3omfOG
+
+#Alibaba SMS
+sms.url = http://gw.api.taobao.com/router/rest
+sms.appkey = 23271500
+sms.secret = a3f563ec8dad00ae163fa6bfeb672d4f
+
+#JPush
+jpush.appkey = bcef1ce31f151e0c52520029
+jpush.secret = f06a952ed3ecf31106765d40
+
+#Email
+mail.host = smtp.163.com
+mail.user = hanmu_runner@163.com
+mail.pass = mobangjacklove33
+mail.name = HanmuRunner
+
+#Easemob chat
+easemob.url = https://a1.easemob.com/twogen/twogen
+easemob.client = YXA6gfcNwJpuEeWe_cl5a34ufw
+easemob.secret = YXA6pqlgI-epwuTx8D44oZoSOtQvs-0

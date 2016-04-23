@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao;
+package me.aipao.util;
 
-import java.util.TimerTask;
+import java.util.Random;
 
 /**
  * @author 帮杰
  */
-public class StartRunTask extends TimerTask {
+public class RandomUtil {
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
+	public static int nextInt(int min, int max) {
+		int bound = max - min + 1;
+		Random random = new Random();
+		int offset = random.nextInt(bound);
+		return min + offset;
 	}
 
 }

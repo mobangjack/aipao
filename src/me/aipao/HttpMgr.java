@@ -17,32 +17,59 @@ package me.aipao;
 
 import java.util.Random;
 
+import me.aipao.util.HttpUtil;
+
+import com.jfinal.kit.PropKit;
+
 
 /**
  * @author 帮杰
  */
 public class HttpMgr {
 
-	public static final String ROOT_URL = Const.ApiRootUrl;
+	//private static final Log LOG = Log.getLog(HttpMgr.class);
+	
+	private String rootUrl = "http://client2.aipao.me/api/";
 	
 	public static final HttpMgr me = new HttpMgr();
 	
-	private HttpMgr() {}
-
+	public HttpMgr() {
+		rootUrl = PropKit.use("config.txt").get("httpMgr.rootUrl", rootUrl);
+	}
 	
-	public String login(String wxCode, String IMEI) {
+	public String generateKey() {
+		String tab = "abcdefghijklmnopqrstuvwxyz";
+		String key = "";
+		Random random = new Random();
+		for (int i = 0; i < 10; i++) {
+		  int j = random.nextInt(tab.length());
+		  key = key + tab.charAt(j);
+		  tab = tab.replace(""+tab.charAt(j), "");
+		}
+		return key;
+	}
+	
+	public String encrypt(int num, String key) {
+		String str = String.valueOf(num);
+		String val = "";
+		for (int i = 0; i < str.length(); i++) {
+			val = val + key.charAt(Integer.parseInt(""+str.charAt(i)));
+		}
+		return val;
+	}
+	
+	public String login(String wxCode, String imei) {
 		System.out.println("-------------------HttpMgr.login---------------------");
-		String url = ROOT_URL + wxCode + "/QM_Users/Login?wxCode=" + wxCode + "&IMEI=" + IMEI;
+		String url = rootUrl + wxCode + "/QM_Users/Login?wxCode=" + wxCode + "&IMEI=" + imei;
 		System.out.println("url="+url);
 		String str = HttpUtil.get(url);
 		System.out.println("result="+str);
 		return str;
 	}
 	
-	
-	public String IMEILogin(String IMEICode) {
-		System.out.println("-------------------HttpMgr.IMEILogin---------------------");
-		String url = ROOT_URL + "%7Btoken%7D/QM_Users/Login_Android?IMEICode="+IMEICode;
+	public String login(String imei) {
+		System.out.println("-------------------HttpMgr.login---------------------");
+		String url = rootUrl + "%7Btoken%7D/QM_Users/Login_Android?IMEICode="+imei;
 		System.out.println("url="+url);
 		String str = HttpUtil.get(url);
 		System.out.println("result="+str);
@@ -51,16 +78,16 @@ public class HttpMgr {
 	
 	public String getLoginInfo(String token) {
 		System.out.println("-------------------HttpMgr.getLoginInfo---------------------");
-		String url = ROOT_URL + token + "/QM_Users/GetLoginInfoByUserId";
+		String url = rootUrl + token + "/QM_Users/GetLoginInfoByUserId";
 		System.out.println("url="+url);
 		String str = HttpUtil.get(url);
 		System.out.println("result="+str);
 		return str;
 	}
 	
-	public String setLastLatLng(String token, int userId, int fieldId, double lat, double lng) {
+	public String setLastLatLng(String token, int userId, int fieldId, float lat, float lng) {
 		System.out.println("-------------------HttpMgr.setLastLatLng---------------------");
-		String url = new StringBuilder(ROOT_URL).append(token)
+		String url = new StringBuilder(rootUrl).append(token)
 				.append("/QM_User_Field/SetLastLatLngByField")
 				.append("?UserId=").append(userId)
 				.append("&FieldId=").append(fieldId)
@@ -73,9 +100,9 @@ public class HttpMgr {
 		return str;
 	}
 	
-	public String startSchoolRun(String token, double lat, double lng) {
+	public String startSchoolRun(String token, float lat, float lng) {
 		System.out.println("-------------------HttpMgr.startSchoolRun---------------------");
-		String url = new StringBuilder(ROOT_URL).append(token)
+		String url = new StringBuilder(rootUrl).append(token)
 				.append("/QM_Runs/StartRunForSchool")
 				.append("?Lat=").append(lat)
 				.append("&Lng=").append(lng)
@@ -91,45 +118,20 @@ public class HttpMgr {
 		return str;
 	}
 	
-	public class Cypher {
-
-		public String generateKey() {
-			String tab = "abcdefghijklmnopqrstuvwxyz";
-			String key = "";
-			Random random = new Random();
-			for (int i = 0; i < 10; i++) {
-			  int j = random.nextInt(tab.length());
-			  key = key + tab.charAt(j);
-			  tab = tab.replace(""+tab.charAt(j), "");
-			}
-			return key;
-		}
-		
-		public String encrypt(Integer num, String key) {
-			String str = String.valueOf(num);
-			String val = "";
-			for (int i = 0; i < str.length(); i++) {
-				val = val + key.charAt(Integer.parseInt(""+str.charAt(i)));
-			}
-			return val;
-		}
-	}
-	
-	public String endSchoolRun(String token, String runId, int scores, int goldCoins, int times, int length) {
+	public String endSchoolRun(String token, String runId, int scores, int coins, int times, int length) {
 		System.out.println("-------------------HttpMgr.endSchoolRun---------------------");
-		Cypher cypher = new Cypher();
-		String key = cypher.generateKey();
-		String encryptScores = cypher.encrypt(scores, key);
-		String encryptGoldCoins = cypher.encrypt(goldCoins, key);
-		String encryptLength = cypher.encrypt(length, key);
-		String encryptTimes = cypher.encrypt(times, key);
-		String url = new StringBuilder(ROOT_URL).append(token)
+		String key = generateKey();
+		String encryptScores = encrypt(scores, key);
+		String encryptCoins = encrypt(coins, key);
+		String encryptTimes = encrypt(times, key);
+		String encryptLength = encrypt(length, key);
+		String url = new StringBuilder(rootUrl).append(token)
 				.append("/QM_Runs/EndRunForSchool")
 				.append("?S1=").append(runId)
 				.append("&S2=").append(encryptScores)
-				.append("&S3=").append(encryptGoldCoins)
-				.append("&S4=").append(encryptLength)
-				.append("&S5=").append(encryptTimes)
+				.append("&S3=").append(encryptCoins)
+				.append("&S4=").append(encryptTimes)
+				.append("&S5=").append(encryptLength)
 				.append("&S6=").append("")
 				.append("&S7=").append("1")
 				.append("&S8=").append(key)
@@ -139,5 +141,34 @@ public class HttpMgr {
 		System.out.println("result="+str);
 		return str;
 	}
+
+	public String buyDiamond(String token, int diamond) {
+	    return HttpUtil.get(rootUrl + token + "/QM_User_Static/BuyDiamond?Diamond=" + diamond);
+	}
+
+	public String buyGold(String token, int gold) {
+		return HttpUtil.get(this.rootUrl + token + "/QM_User_Static/BuyGold?Gold=" + gold);
+	}
+
+	public String buyPerson(String token, int person) {
+		return HttpUtil.get(this.rootUrl + token + "/QM_User_Person/BuyPerson?PersonId=" + person);
+	}
+
+	public String buyPower(String token, int power) {
+		return HttpUtil.get(this.rootUrl + token + "/QM_User_Static/BuyPower?Power=" + power);
+	}
+  
+	public String getRootUrl() {
+		return rootUrl;
+	}
+
+	public void setRootUrl(String rootUrl) {
+		this.rootUrl = rootUrl;
+	}
 	
+	
+	
+	public static void main(String[] args) {
+		System.out.println(me.login("2ea1bc86fc4c4050a36a9126bfdcb771"));
+	}
 }
