@@ -61,6 +61,9 @@ public class DateUtil {
     }
 
     public static boolean isExpire(Date date, long expiredIn) {
+    	if (date == null) {
+			return true;
+		}
         return new Date().getTime() - date.getTime() > expiredIn;
     }
 

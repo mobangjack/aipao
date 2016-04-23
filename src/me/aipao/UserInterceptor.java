@@ -44,7 +44,9 @@ public class UserInterceptor implements Interceptor {
 				if (user == null) {
 					Result.unauth("token invalid").render(c);
 				}else {
-					if (DateUtil.isExpire(user.getLogin(), ActiveModel.getExpire(User.class)*1000)) {
+					if (user.getLogin() == null) {
+						Result.unauth("token out of date").render(c);
+					}else if (DateUtil.isExpire(user.getLogin(), ActiveModel.getExpire(User.class)*1000)) {
 						Result.unauth("token expired").render(c);
 					}else {
 						CacheKit.put("user", token, user);

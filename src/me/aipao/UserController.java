@@ -15,7 +15,9 @@
  */
 package me.aipao;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,12 +55,17 @@ public class UserController extends BaseController {
 			failure("name or pass can not be blank");
 			return;
 		}
-		User user = User.dao.findFirst("select 1 from user where name=? and pass=?", name, pass);
+		User user = User.dao.findFirst("select * from user where name=? and pass=?", name, pass);
 		if (user == null) {
 			failure("user not exits");
 		}else {
-			String token = UUID.randomUUID().toString().replace("-", "");
+			String token = user.getToken();
+			if (StrKit.notBlank(token)) {
+				CacheKit.remove("user", token);
+			}
+			token = UUID.randomUUID().toString().replace("-", "");
 			user.setToken(token);
+			user.setLogin(new Date());
 			user.update();
 			CacheKit.put("user", token, user);
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -67,4 +74,13 @@ public class UserController extends BaseController {
 		}
 	}
 	
+	public void index() {
+		User user = getUser();
+		if (user.getAdmin()) {
+			List<User> users = User.dao.find("select * from user");
+			success(users);
+		}else {
+			success(user);
+		}
+	}
 }

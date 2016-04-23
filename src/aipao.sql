@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50710
 File Encoding         : 65001
 
-Date: 2016-04-23 15:57:05
+Date: 2016-04-24 00:03:34
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -44,7 +44,6 @@ CREATE TABLE `run` (
 -- ----------------------------
 -- Records of run
 -- ----------------------------
-INSERT INTO `run` VALUES ('2ea1bc86fc4c4050a36a9126bfdcb770', null, null, null, '99', '30.545273', '114.365715', '30.544746', '114.365715', '5000', '2000', '860', '2000', null, null, '0', null, '2016-04-23 20:30:19');
 
 -- ----------------------------
 -- Table structure for `user`
@@ -57,11 +56,11 @@ CREATE TABLE `user` (
   `imei` varchar(32) DEFAULT NULL,
   `token` varchar(32) DEFAULT NULL,
   `login` datetime DEFAULT NULL,
-  `admin` tinyint(1) DEFAULT 0,
+  `admin` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'bj', '1314233', '2ea1bc86fc4c4050a36a9126bfdcb770', null, '2016-04-23 15:56:44', 1);
+INSERT INTO `user` VALUES ('1', 'bj', '1314233', null, null, null, '1');
