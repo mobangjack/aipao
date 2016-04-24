@@ -24,7 +24,6 @@ import com.jfinal.kit.PropKit;
 public interface Ctx {
 
 	String cfgFileName = "config.txt";
-	String jobFileName = "runner.txt";
 	String datePattern = "yyyy-MM-dd hh:mm:ss";
 	
 	Prop cfg = PropKit.use(cfgFileName);
@@ -50,21 +49,4 @@ public interface Ctx {
 		String user = "user";
 	}
 	
-	interface Msg {
-		String err = "Something wrong";
-	}
-	
-	interface Run {
-		String imei = "2ea1bc86fc4c4050a36a9126bfdcb770";
-		int fieldId = 99;
-		float lastLat = 30.545273f;
-		float lastLng = 114.365715f;
-		float lat = 30.544746f;
-		float lan = 114.365715f;
-		int scores = 5000;
-		int coins = 2000;
-		int minTimes = 480;
-		int maxTimes = 600;
-		int len = 2000;
-	}
 }

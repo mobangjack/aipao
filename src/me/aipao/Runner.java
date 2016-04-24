@@ -15,7 +15,7 @@
  */
 package me.aipao;
 
-import java.util.Calendar;
+import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,9 @@ import me.aipao.model.Run;
 import me.aipao.util.DateUtil;
 import me.aipao.util.JsonUtil;
 import me.aipao.util.RandomUtil;
+
+import com.jfinal.kit.Prop;
+import com.jfinal.kit.PropKit;
 
 
 /**
@@ -43,36 +46,48 @@ import me.aipao.util.RandomUtil;
  */
 @SuppressWarnings({"rawtypes","unchecked"})
 public class Runner implements Runnable {
+
+	private final Prop runProp = PropKit.use("run.txt");
+	private final Prop timeProp = PropKit.use("time.txt");
 	
-	public static boolean inDuty() {
-		int hours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-		return ((hours >= 6 && hours <= 8) || (hours >= 16 && hours <= 18) || (hours >= 20 && hours <= 22));
-	}
+	private final Time time1 = Time.valueOf(timeProp.get("time1", "6:00:00"));
+	private final Time time2 = Time.valueOf(timeProp.get("time2", "8:30:00"));
+	private final Time time3 = Time.valueOf(timeProp.get("time3", "16:00:00"));
+	private final Time time4 = Time.valueOf(timeProp.get("time4", "18:30:00"));
+	private final Time time5 = Time.valueOf(timeProp.get("time5", "20:00:00"));
+	private final Time time6 = Time.valueOf(timeProp.get("time6", "23:00:00"));
 	
-	public static boolean isRunDue(Run run) {
-		if (new Date().getTime()-run.getStartTime().getTime() < run.getTimes()*1000) {
-			return false;
+	private final Integer coins = runProp.getInt("coins", 2000);
+	private final Integer scores = runProp.getInt("scores", 5000);
+	private final Integer minTimes = runProp.getInt("minTimes", 480);
+	private final Integer maxTimes = runProp.getInt("maxTimes", 600);
+	private final Integer length = runProp.getInt("length", 2000);
+	
+	private final long minDutyMsLeft = maxTimes*1000;
+	
+	public long dutyMsLeft() {
+		Time time = new Time(new Date().getTime());
+		if (time.after(time1)&&time.before(time2)) {
+			return time2.getTime()-time.getTime();
 		}
-		return true;
+		if (time.after(time3)&&time.before(time4)) {
+			return time4.getTime()-time.getTime();
+		}
+		if (time.after(time5)&&time.before(time6)) {
+			return time6.getTime()-time.getTime();
+		}
+		return 0;
 	}
 	
-	private static void printMsg() {
-		String bound = "|----------------------------------------------------------------------|";
-		StringBuilder sb = new StringBuilder();
-		sb.append(bound);
-		sb.append("\n|**************{");
-		sb.append(DateUtil.formatCurrent());
-		sb.append(":Runner is in duty");
-		sb.append("}*****************|\n");
-		sb.append(bound);
-		System.out.println(sb);
+	public boolean onDuty() {
+		return dutyMsLeft() > minDutyMsLeft;
 	}
 	
-	public static void main(String[] args) {
-		printMsg();
+	public boolean due(Run run) {
+		return (new Date().getTime()-run.getStartTime().getTime() >= run.getTimes()*1000);
 	}
 	
-	public static boolean login(Run run) {
+	public boolean login(Run run) {
 		
 		String result = HttpMgr.me.login(run.getImei());
 		
@@ -98,74 +113,80 @@ public class Runner implements Runnable {
 		String runId = (String) data.get("RunId");
 		Integer fieldId = (Integer) data.get("FieldId");
 		
-		Integer coins = 2000;
-		Integer scores = 5000;
-		Integer times = RandomUtil.nextInt(480, 600);
-		Integer length = 2000;
-		
 		run.setToken(token);
 		run.setUserId(userId);
 		run.setRunId(runId);
 		run.setFieldId(fieldId);
 		run.setScores(scores);
 		run.setCoins(coins);
-		run.setTimes(times);
+		run.setTimes(RandomUtil.nextInt(minTimes, maxTimes));
 		run.setLength(length);
-		run.setState(1);
-		run.setMsg(result);
 		run.setStartTime(new Date());
-		run.setLastModify(new Date());
+		run.setEndTime(null);
+		run.setResult(result);
 		run.update();
 		
 		return true;
 	}
 	
-	public static boolean apply(Run run) {
+	public boolean apply(Run run) {
 		
 		String result = HttpMgr.me.endSchoolRun(run.getToken(), run.getRunId(), run.getScores(), run.getCoins(), run.getTimes(), run.getLength());
 		
-		run.setState(0);
-		run.setMsg(result);
 		run.setEndTime(new Date());
-		run.setLastModify(new Date());
+		run.setResult(result);
 		run.update();
 		
 		return true;
 	}
 
-	public static boolean suspend(Run run) {
-		run.setMsg("pending");
-		run.setLastModify(new Date());
-		run.update();
-		return true;
+	public int run(Run run) {
+		
+		if (!onDuty()) {
+			return 0;
+		}
+		
+		if (!DateUtil.isToday(run.getEndTime())) {
+			
+			login(run);
+			return 1;
+			
+		}else {
+			
+			apply(run);
+			return 2;
+			
+		}
+
+	}
+	
+	public void main(String[] args) {
+		//printMsg();
+		Time time1 = Time.valueOf("6:00:00");
+		Time time2 = Time.valueOf("8:30:00");
+		System.out.println(time1.before(time2));
 	}
 	
 	@Override
 	public void run() {
-		if (!inDuty()) {
-			System.out.println("\nRunner is not in duty,keeping scanning...\n");
-			return;
-		}
 		printMsg();
-		try {
-			List<Run> runs = Run.dao.find("select * from run where endTime is null or TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
-			for (Run run : runs) {
-				
-				if (run.getState() != 1) {
-					
-					login(run);
-					
-				}else if (isRunDue(run)) {
-					
-					apply(run);
-					
-				}
-				
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		List<Run> runs = Run.dao.find("select * from run where startTime is null or endTime is null or TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
+		for (Run run : runs) {
+			run(run);
 		}
-		
 	}
-
+	
+	private void printMsg() {
+		String bound = "|----------------------------------------------------------------------|";
+		StringBuilder sb = new StringBuilder();
+		sb.append(bound);
+		sb.append("\n|**************{");
+		sb.append(DateUtil.formatCurrent());
+		sb.append(":Runner scanning...");
+		sb.append("}*****************|\n");
+		sb.append(bound);
+		System.out.println(sb);
+	}
+	
+	
 }

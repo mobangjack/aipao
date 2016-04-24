@@ -33,12 +33,12 @@ public abstract class BaseUser<M extends BaseUser<M>> extends Model<M> implement
 		return get("pass");
 	}
 
-	public void setLogin(java.util.Date login) {
-		set("login", login);
+	public void setImei(java.lang.String imei) {
+		set("imei", imei);
 	}
 
-	public java.util.Date getLogin() {
-		return get("login");
+	public java.lang.String getImei() {
+		return get("imei");
 	}
 
 	public void setToken(java.lang.String token) {
@@ -49,12 +49,12 @@ public abstract class BaseUser<M extends BaseUser<M>> extends Model<M> implement
 		return get("token");
 	}
 
-	public void setImei(java.lang.String imei) {
-		set("imei", imei);
+	public void setLogin(java.util.Date login) {
+		set("login", login);
 	}
 
-	public java.lang.String getImei() {
-		return get("imei");
+	public java.util.Date getLogin() {
+		return get("login");
 	}
 
 }

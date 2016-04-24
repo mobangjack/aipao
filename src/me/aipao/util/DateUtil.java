@@ -71,17 +71,20 @@ public class DateUtil {
         return new Date().getTime() - date.getTime() > expiredIn;
     }
 
+    public static boolean isToday(Date date) {
+		return isTheSameDay(date, new Date());
+	}
+    
+    public static boolean notToday(Date date) {
+		return !isToday(date);
+	}
+    
     @SuppressWarnings("deprecation")
 	public static boolean isTheSameDay(Date date1, Date date2) {
+    	if (date1 == null || date2 == null) {
+			return false;
+		}
 		return (date1.getYear()==date2.getYear())&&(date1.getMonth()==date2.getMonth())&&(date1.getDate()==date2.getDate());
-	}
-    
-    public static long msBetween(Date startDate, Date endDate) {
-    	return endDate.getTime()-startDate.getTime();
-	}
-    
-    public static long sBetween(Date startDate, Date endDate) {
-    	return msBetween(startDate, endDate)/1000;
 	}
     
     public static Date getHourAfter(Date date, int hour) {

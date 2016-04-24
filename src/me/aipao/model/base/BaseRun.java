@@ -113,6 +113,14 @@ public abstract class BaseRun<M extends BaseRun<M>> extends Model<M> implements 
 		return get("length");
 	}
 
+	public void setResult(java.lang.String result) {
+		set("result", result);
+	}
+
+	public java.lang.String getResult() {
+		return get("result");
+	}
+
 	public void setStartTime(java.util.Date startTime) {
 		set("startTime", startTime);
 	}
@@ -127,30 +135,6 @@ public abstract class BaseRun<M extends BaseRun<M>> extends Model<M> implements 
 
 	public java.util.Date getEndTime() {
 		return get("endTime");
-	}
-
-	public void setState(java.lang.Integer state) {
-		set("state", state);
-	}
-
-	public java.lang.Integer getState() {
-		return get("state");
-	}
-
-	public void setMsg(java.lang.String msg) {
-		set("msg", msg);
-	}
-
-	public java.lang.String getMsg() {
-		return get("msg");
-	}
-
-	public void setLastModify(java.util.Date lastModify) {
-		set("lastModify", lastModify);
-	}
-
-	public java.util.Date getLastModify() {
-		return get("lastModify");
 	}
 
 }

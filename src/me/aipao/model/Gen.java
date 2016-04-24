@@ -18,7 +18,6 @@ package me.aipao.model;
 import javax.sql.DataSource;
 
 import me.aipao.Ctx;
-import me.aipao.Ctx.Jdbc;
 
 import com.jfinal.kit.PathKit;
 import com.jfinal.plugin.activerecord.generator.Generator;

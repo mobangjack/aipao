@@ -51,11 +51,9 @@ CREATE TABLE `run` (
   `coins` mediumint(5) unsigned DEFAULT '2000',
   `times` mediumint(5) unsigned DEFAULT '540',
   `length` mediumint(5) unsigned DEFAULT '2000',
+  `result` varchar(2000) DEFAULT NULL,
   `startTime` datetime DEFAULT NULL,
   `endTime` datetime DEFAULT NULL,
-  `state` tinyint(4) DEFAULT '0',
-  `msg` varchar(2000) DEFAULT NULL,
-  `lastModify` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`imei`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -71,9 +69,9 @@ CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
   `pass` varchar(32) NOT NULL,
-  `login` datetime DEFAULT NULL,
-  `token` varchar(32) DEFAULT NULL,
   `imei` varchar(32) DEFAULT NULL,
+  `token` varchar(32) DEFAULT NULL,
+  `login` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
