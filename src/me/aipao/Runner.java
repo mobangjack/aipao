@@ -160,11 +160,8 @@ public class Runner implements Runnable {
 
 	}
 	
-	public void main(String[] args) {
-		//printMsg();
-		Time time1 = Time.valueOf("6:00:00");
-		Time time2 = Time.valueOf("8:30:00");
-		System.out.println(time1.before(time2));
+	public static void main(String[] args) {
+		printMsg();
 	}
 	
 	@Override
@@ -176,11 +173,11 @@ public class Runner implements Runnable {
 		}
 	}
 	
-	private void printMsg() {
+	private static void printMsg() {
 		String bound = "|----------------------------------------------------------------------|";
 		StringBuilder sb = new StringBuilder();
 		sb.append(bound);
-		sb.append("\n|**************{");
+		sb.append("\n|*************{");
 		sb.append(DateUtil.formatCurrent());
 		sb.append(":Runner scanning...");
 		sb.append("}*****************|\n");
