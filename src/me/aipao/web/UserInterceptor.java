@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao;
+package me.aipao.web;
 
 import javax.servlet.http.HttpServletRequest;
 

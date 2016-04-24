@@ -16,6 +16,9 @@
 package me.aipao;
 
 import me.aipao.model._MappingKit;
+import me.aipao.web.RunController;
+import me.aipao.web.UserController;
+import me.aipao.web.UserInterceptor;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -75,7 +78,7 @@ public class Aipao extends JFinalConfig {
 		
 		me.add(new EhCachePlugin());
 		
-		me.add(new SchedulerPlugin("runner.txt"));
+		me.add(new SchedulerPlugin(1, "runner.txt"));
 	}
 
 	@Override

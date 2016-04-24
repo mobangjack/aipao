@@ -20,6 +20,10 @@ public class DateUtil {
         return formatDateTime(date, FORMAT_DATETIME);
     }
 
+    public static String formatCurrent() {
+		return formatDateTime(new Date(), FORMAT_DATETIME);
+	}
+    
     public static String formatCurrent(String format) {
 		return formatDateTime(new Date(), format);
 	}

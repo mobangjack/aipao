@@ -1,4 +1,4 @@
-package me.aipao;
+package me.aipao.web;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.aipao.model.Run;
+import me.aipao.util.DateUtil;
 import me.aipao.util.JsonUtil;
 import me.aipao.util.RandomUtil;
 
@@ -48,13 +49,17 @@ public class Runner implements Runnable {
 		return ((hours >= 6 && hours <= 8) || (hours >= 16 && hours <= 18) || (hours >= 20 && hours <= 22));
 	}
 	
+	private void printMsg() {
+		System.out.println("\n/************************{"+DateUtil.formatCurrent()+":Runner is in duty..."+"}************************/");
+	}
+	
 	@Override
 	public void run() {
 		if (!isInDuty()) {
 			return;
 		}
-		System.out.println("Runner is in duty...");
-		List<Run> runs = Run.dao.find("select * from run where TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
+		printMsg();
+		List<Run> runs = Run.dao.find("select * from run where endTime=null or TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
 		for (Run run : runs) {
 			
 			if (run.getState() != 1) {
