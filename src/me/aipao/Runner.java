@@ -44,9 +44,16 @@ import me.aipao.util.RandomUtil;
 @SuppressWarnings({"rawtypes","unchecked"})
 public class Runner implements Runnable {
 	
-	public boolean isInDuty() {
+	public static boolean inDuty() {
 		int hours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 		return ((hours >= 6 && hours <= 8) || (hours >= 16 && hours <= 18) || (hours >= 20 && hours <= 22));
+	}
+	
+	public static boolean isRunDue(Run run) {
+		if (new Date().getTime()-run.getStartTime().getTime() < run.getTimes()*1000) {
+			return false;
+		}
+		return true;
 	}
 	
 	private static void printMsg() {
@@ -65,81 +72,104 @@ public class Runner implements Runnable {
 		printMsg();
 	}
 	
+	public static boolean login(Run run) {
+		
+		String result = HttpMgr.me.login(run.getImei());
+		
+		Map<String, Object> map = JsonUtil.parse(result);
+		
+		Map<String, Object> data = (Map) map.get("Data");
+		
+		//{"Success":false,"ErrCode":7,"ErrMsg":"无此验证码"}
+		
+		String token = (String) data.get("Token");
+		
+		Integer userId = (Integer) data.get("UserId");
+		
+		result = HttpMgr.me.setLastLatLng(token, userId, run.getFieldId(), run.getLastLat(), run.getLastLng());
+		
+		result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
+		
+		map = JsonUtil.parse(result);
+		
+		//Power weak
+		data = (Map) map.get("Data");
+		
+		String runId = (String) data.get("RunId");
+		Integer fieldId = (Integer) data.get("FieldId");
+		
+		Integer coins = 2000;
+		Integer scores = 5000;
+		Integer times = RandomUtil.nextInt(480, 600);
+		Integer length = 2000;
+		
+		run.setToken(token);
+		run.setUserId(userId);
+		run.setRunId(runId);
+		run.setFieldId(fieldId);
+		run.setScores(scores);
+		run.setCoins(coins);
+		run.setTimes(times);
+		run.setLength(length);
+		run.setState(1);
+		run.setMsg(result);
+		run.setStartTime(new Date());
+		run.setLastModify(new Date());
+		run.update();
+		
+		return true;
+	}
+	
+	public static boolean apply(Run run) {
+		
+		String result = HttpMgr.me.endSchoolRun(run.getToken(), run.getRunId(), run.getScores(), run.getCoins(), run.getTimes(), run.getLength());
+		
+		run.setState(0);
+		run.setMsg(result);
+		run.setEndTime(new Date());
+		run.setLastModify(new Date());
+		run.update();
+		
+		return true;
+	}
+
+	public static boolean suspend(Run run) {
+		run.setMsg("pending");
+		run.setLastModify(new Date());
+		run.update();
+		return true;
+	}
+	
 	@Override
 	public void run() {
-		if (!isInDuty()) {
+		if (!inDuty()) {
+			System.out.println("\nRunner is not in duty,keeping scanning...\n");
 			return;
 		}
 		printMsg();
-		List<Run> runs = Run.dao.find("select * from run where endTime=null or TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
-		for (Run run : runs) {
-			
-			if (run.getState() != 1) {
+		try {
+			List<Run> runs = Run.dao.find("select * from run where endTime is null or TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
+			for (Run run : runs) {
 				
-				String result = HttpMgr.me.login(run.getImei());
-				
-				Map<String, Object> map = JsonUtil.parse(result);
-				
-				Map<String, Object> data = (Map) map.get("Data");
-				
-				//{"Success":false,"ErrCode":7,"ErrMsg":"无此验证码"}
-				if (data == null) {
-					run.delete();
-					continue;
+				if (run.getState() != 1) {
+					
+					login(run);
+					
+				}else if (isRunDue(run)) {
+					
+					apply(run);
+					
+				}else {
+					
+					suspend(run);
+					
 				}
 				
-				String token = (String) data.get("Token");
-				
-				Integer userId = (Integer) data.get("UserId");
-				
-				result = HttpMgr.me.setLastLatLng(token, userId, run.getFieldId(), run.getLastLat(), run.getLastLng());
-				
-				result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
-				
-				map = JsonUtil.parse(result);
-				
-				//Power weak
-				data = (Map) map.get("Data");
-				
-				String runId = (String) data.get("RunId");
-				Integer fieldId = (Integer) data.get("FieldId");
-				
-				Integer coins = 2000;
-				Integer scores = 5000;
-				Integer times = RandomUtil.nextInt(480, 600);
-				Integer length = 2000;
-				
-				run.setToken(token);
-				run.setUserId(userId);
-				run.setRunId(runId);
-				run.setFieldId(fieldId);
-				run.setScores(scores);
-				run.setCoins(coins);
-				run.setTimes(times);
-				run.setLength(length);
-				run.setState(1);
-				run.setMsg(result);
-				run.setStartTime(new Date());
-				run.setLastModify(new Date());
-				run.update();
-				
-			}else if (new Date().getTime()-run.getStartTime().getTime() >= run.getTimes()*1000) {
-				
-				String result = HttpMgr.me.endSchoolRun(run.getToken(), run.getRunId(), run.getScores(), run.getCoins(), run.getTimes(), run.getLength());
-				
-				run.setState(0);
-				run.setMsg(result);
-				run.setEndTime(new Date());
-				run.setLastModify(new Date());
-				run.update();
-				
-			}else {
-				run.setMsg("pending");
-				run.setLastModify(new Date());
-				run.update();
 			}
-			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 	}
 
 }

@@ -22,11 +22,14 @@ import me.aipao.model.Run;
 import me.aipao.model.User;
 import me.aipao.util.JsonUtil;
 
+import com.jfinal.aop.Before;
 import com.jfinal.kit.StrKit;
 
 /**
  * @author 帮杰
  */
+
+@Before(UserInterceptor.class)
 public class RunController extends BaseController {
 
 	public void index() {

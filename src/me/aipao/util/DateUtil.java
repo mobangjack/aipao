@@ -76,6 +76,14 @@ public class DateUtil {
 		return (date1.getYear()==date2.getYear())&&(date1.getMonth()==date2.getMonth())&&(date1.getDate()==date2.getDate());
 	}
     
+    public static long msBetween(Date startDate, Date endDate) {
+    	return endDate.getTime()-startDate.getTime();
+	}
+    
+    public static long sBetween(Date startDate, Date endDate) {
+    	return msBetween(startDate, endDate)/1000;
+	}
+    
     public static Date getHourAfter(Date date, int hour) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
