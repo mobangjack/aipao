@@ -49,8 +49,20 @@ public class Runner implements Runnable {
 		return ((hours >= 6 && hours <= 8) || (hours >= 16 && hours <= 18) || (hours >= 20 && hours <= 22));
 	}
 	
-	private void printMsg() {
-		System.out.println("\n/************************{"+DateUtil.formatCurrent()+":Runner is in duty..."+"}************************/");
+	private static void printMsg() {
+		String bound = "|----------------------------------------------------------------------|";
+		StringBuilder sb = new StringBuilder();
+		sb.append(bound);
+		sb.append("\n|**************{");
+		sb.append(DateUtil.formatCurrent());
+		sb.append(":Runner is in duty");
+		sb.append("}*****************|\n");
+		sb.append(bound);
+		System.out.println(sb);
+	}
+	
+	public static void main(String[] args) {
+		printMsg();
 	}
 	
 	@Override

@@ -17,26 +17,29 @@ package me.aipao.web;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import me.aipao.Ctx;
 import me.aipao.model.User;
+import me.aipao.util.StrUtil;
 
+import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
-import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.ehcache.CacheKit;
 
 /**
  * @author 帮杰
  */
+
+@Before(UserInterceptor.class)
 public class UserController extends BaseController {
 
 	@Clear
 	public void register() {
 		String name = getPara("name");
 		String pass = getPara("pass");
-		if (StrKit.isBlank(name) || StrKit.isBlank(pass)) {
+		if (StrUtil.isBlank(name) || StrUtil.isBlank(pass)) {
 			failure("name or pass can not be blank");
 			return;
 		}
@@ -51,7 +54,7 @@ public class UserController extends BaseController {
 	public void login() {
 		String name = getPara("name");
 		String pass = getPara("pass");
-		if (StrKit.isBlank(name) || StrKit.isBlank(pass)) {
+		if (StrUtil.isBlank(name) || StrUtil.isBlank(pass)) {
 			failure("name or pass can not be blank");
 			return;
 		}
@@ -60,14 +63,14 @@ public class UserController extends BaseController {
 			failure("user not exits");
 		}else {
 			String token = user.getToken();
-			if (StrKit.notBlank(token)) {
-				CacheKit.remove("user", token);
+			if (StrUtil.notBlank(token)) {
+				CacheKit.remove(Ctx.Cache.user, token);
 			}
 			token = UUID.randomUUID().toString().replace("-", "");
 			user.setToken(token);
 			user.setLogin(new Date());
 			user.update();
-			CacheKit.put("user", token, user);
+			CacheKit.put(Ctx.Cache.user, token, user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("token", token);
 			success(map);
@@ -75,12 +78,7 @@ public class UserController extends BaseController {
 	}
 	
 	public void index() {
-		User user = getUser();
-		if (user.getAdmin()) {
-			List<User> users = User.dao.find("select * from user");
-			success(users);
-		}else {
-			success(user);
-		}
+		User user = new User()._setAttrs(getUser()).remove("pass");
+		success(user);
 	}
 }

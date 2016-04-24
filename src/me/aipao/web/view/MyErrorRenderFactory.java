@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao;
+package me.aipao.web.view;
 
-import com.jfinal.kit.Prop;
-import com.jfinal.kit.PropKit;
+import com.jfinal.render.IErrorRenderFactory;
+import com.jfinal.render.Render;
+
 
 /**
  * @author 帮杰
  */
-public interface Const {
+public class MyErrorRenderFactory implements IErrorRenderFactory {
 
-	Prop cfg = PropKit.use("config.txt");
-	
-	interface JF {
-		boolean devMode = cfg.getBoolean("jfinal.devMode", false);
+	@Override
+	public Render getRender(int errorCode, String view) {
+		return null;
 	}
-	
-	interface Jdbc {
-		String url = cfg.get("jdbc.url");
-		String user = cfg.get("jdbc.user");
-		String pass = cfg.get("jdbc.pass");
-	}
-	
+
 }

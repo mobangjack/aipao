@@ -34,6 +34,17 @@
             memoryStoreEvictionPolicy="LRU"
             />
 
+	<!-- admin 有效时长：2小时 -->
+    <cache name="admin"
+           maxElementsInMemory="10000"
+           maxElementsOnDisk="1000"
+           eternal="false"
+           overflowToDisk="true"
+           timeToIdleSeconds="7200"
+           timeToLiveSeconds="7200"
+           memoryStoreEvictionPolicy="LFU"
+            />
+            
 	<!-- user 有效时长：2小时 -->
     <cache name="user"
            maxElementsInMemory="10000"

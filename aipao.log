@@ -811,3 +811,6 @@ Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Table 'aip
 	at com.jfinal.plugin.activerecord.TableBuilder.doBuild(TableBuilder.java:70)
 	at com.jfinal.plugin.activerecord.TableBuilder.build(TableBuilder.java:46)
 	... 20 more
+
+2016-04-24 16:29:20
+[WARN]-[Thread: qtp1112280004-29]-[com.jfinal.core.ActionHandler.handle()]: 404 Action Not Found: /aipao/admin?

@@ -13,40 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.web;
+package me.aipao;
 
-import me.aipao.Ctx;
-import me.aipao.model.User;
-
-import com.jfinal.core.Controller;
+import com.jfinal.kit.Prop;
+import com.jfinal.kit.PropKit;
 
 /**
  * @author 帮杰
  */
-public class BaseController extends Controller {
+public interface Ctx {
 
-	public User getUser() {
-		return getAttr(Ctx.Attr.user);
+	String cfgFileName = "config.txt";
+	String jobFileName = "runner.txt";
+	String datePattern = "yyyy-MM-dd hh:mm:ss";
+	
+	Prop cfg = PropKit.use(cfgFileName);
+	
+	interface JF {
+		boolean devMode = cfg.getBoolean("jfinal.devMode", false);
 	}
 	
-	public void success(String msg, Object data) {
-		Result.success(msg, data).render(this);
+	interface Jdbc {
+		String url = cfg.get("jdbc.url");
+		String user = cfg.get("jdbc.user");
+		String pass = cfg.get("jdbc.pass");
 	}
 	
-	public void success(Object data) {
-		Result.create(0, "ok", data).render(this);
+	interface Cache {
+		String admin = "admin";
+		String user = "user";
 	}
 	
-	public void success() {
-		Result.success("ok").render(this);
+	interface Attr {
+		String token = "token";
+		String admin = "admin";
+		String user = "user";
 	}
 	
-	public void failure(String msg) {
-		Result.failure(msg).render(this);
+	interface Msg {
+		String err = "Something wrong";
 	}
-	
-	public void failure() {
-		Result.failure("err").render(this);
-	}
-
 }

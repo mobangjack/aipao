@@ -15,8 +15,6 @@
  */
 package me.aipao.web;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import me.aipao.HttpMgr;
@@ -33,25 +31,8 @@ public class RunController extends BaseController {
 
 	public void index() {
 		User user = getUser();
-		if (user.getAdmin()) {
-			List<Run> runs = Run.dao.find("select * from run");
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("runs", runs);
-			success(map);
-		}else {
-			show();
-		}
-	}
-	
-	public void show() {
-		User user = getUser();
-		String imei = getPara("imei");
-		if (user.getAdmin()) {
-			success(Run.dao.findById(imei));
-			return;
-		}
 		if (StrKit.isBlank(user.getImei())) {
-			success("you havn't registered your run task yet");
+			failure("you havn't registered your imei");
 			return;
 		}
 		success(Run.dao.findById(user.getImei()));

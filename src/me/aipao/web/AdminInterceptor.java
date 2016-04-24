@@ -16,7 +16,7 @@
 package me.aipao.web;
 
 import me.aipao.Ctx;
-import me.aipao.model.User;
+import me.aipao.model.Admin;
 import me.aipao.util.CacheUtil;
 import me.aipao.util.DateUtil;
 
@@ -27,30 +27,30 @@ import com.jfinal.core.Controller;
 /**
  * @author 帮杰
  */
-public class UserInterceptor implements Interceptor {
+public class AdminInterceptor implements Interceptor {
 
 	@Override
 	public void intercept(Invocation inv) {
 		Controller c = inv.getController();
 		String token = c.getAttr(Ctx.Attr.token);
-		User user = CacheUtil.get(Ctx.Cache.user, token);
-		if (user == null) {
-			user = User.dao.findFirst("select * from user where token=? limit 1", token);
-			if (user == null) {
+		Admin admin = CacheUtil.get(Ctx.Cache.admin, token);
+		if (admin == null) {
+			admin = Admin.dao.findFirst("select * from admin where token=? limit 1", token);
+			if (admin == null) {
 				Result.unauth("token invalid").render(c);
 			}else {
-				if (user.getLogin() == null) {
+				if (admin.getLogin() == null) {
 					Result.unauth("token out of date").render(c);
-				}else if (DateUtil.isExpire(user.getLogin(), CacheUtil.getTimeToLiveSeconds(Ctx.Cache.user)*1000)) {
+				}else if (DateUtil.isExpire(admin.getLogin(), CacheUtil.getTimeToLiveSeconds(Ctx.Cache.admin)*1000)) {
 					Result.unauth("token expired").render(c);
 				}else {
-					CacheUtil.put(Ctx.Cache.user, token, user);
-					c.setAttr(Ctx.Attr.user, user);
+					CacheUtil.put(Ctx.Attr.admin, token, admin);
+					c.setAttr(Ctx.Attr.admin, admin);
 					inv.invoke();
 				}
 			}
 		}else {
-			c.setAttr(Ctx.Attr.user, user);
+			c.setAttr(Ctx.Attr.admin, admin);
 			inv.invoke();
 		}
 	}

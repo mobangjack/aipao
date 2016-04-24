@@ -15,38 +15,28 @@
  */
 package me.aipao.web;
 
-import me.aipao.Ctx;
-import me.aipao.model.User;
+import javax.servlet.http.HttpServletRequest;
 
+import com.jfinal.aop.Interceptor;
+import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 
 /**
  * @author 帮杰
  */
-public class BaseController extends Controller {
+public class GlobalInterceptor implements Interceptor {
 
-	public User getUser() {
-		return getAttr(Ctx.Attr.user);
-	}
-	
-	public void success(String msg, Object data) {
-		Result.success(msg, data).render(this);
-	}
-	
-	public void success(Object data) {
-		Result.create(0, "ok", data).render(this);
-	}
-	
-	public void success() {
-		Result.success("ok").render(this);
-	}
-	
-	public void failure(String msg) {
-		Result.failure(msg).render(this);
-	}
-	
-	public void failure() {
-		Result.failure("err").render(this);
+	@Override
+	public void intercept(Invocation inv) {
+		Controller c = inv.getController();
+		HttpServletRequest request = c.getRequest();
+		String token = request.getHeader("token");
+		if (token == null || token.trim().isEmpty()) {
+			Result.unauth("unauthorized").render(c);
+		}else {
+			c.setAttr("token", token);
+			inv.invoke();
+		}
 	}
 
 }

@@ -13,40 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.web;
+package me.aipao.util;
 
-import me.aipao.Ctx;
-import me.aipao.model.User;
-
-import com.jfinal.core.Controller;
+import java.util.Random;
 
 /**
  * @author 帮杰
  */
-public class BaseController extends Controller {
+public class Cypher {
 
-	public User getUser() {
-		return getAttr(Ctx.Attr.user);
+	public static String generateKey() {
+		String tab = "abcdefghijklmnopqrstuvwxyz";
+		String key = "";
+		Random random = new Random();
+		for (int i = 0; i < 10; i++) {
+		  int j = random.nextInt(tab.length());
+		  key = key + tab.charAt(j);
+		  tab = tab.replace(""+tab.charAt(j), "");
+		}
+		return key;
 	}
 	
-	public void success(String msg, Object data) {
-		Result.success(msg, data).render(this);
+	public static String encrypt(String str, String key) {
+		String val = "";
+		for (int i = 0; i < str.length(); i++) {
+			val = val + key.charAt(Integer.parseInt(""+str.charAt(i)));
+		}
+		return val;
 	}
 	
-	public void success(Object data) {
-		Result.create(0, "ok", data).render(this);
-	}
-	
-	public void success() {
-		Result.success("ok").render(this);
-	}
-	
-	public void failure(String msg) {
-		Result.failure(msg).render(this);
-	}
-	
-	public void failure() {
-		Result.failure("err").render(this);
+	public static String encrypt(long num, String key) {
+		String str = String.valueOf(num);
+		return encrypt(str, key);
 	}
 
 }

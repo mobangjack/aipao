@@ -17,36 +17,20 @@ package me.aipao.util;
 
 import java.util.UUID;
 
+import com.jfinal.kit.StrKit;
+
 /**
  * A small String tool kit.
  * @author 帮杰
  *
  */
-public class StrUtil {
+public class StrUtil extends StrKit {
 
 	public static String uuid() {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
 	
-	public static boolean isBlank(String s) {
-		return s==null||s.trim().equals("");
-	}
-
-	public static String firstCharToLowerCase(String s) {
-		if(isBlank(s))
-			return s;
-		return s.substring(0, 1).toLowerCase()+s.substring(1, s.length());
-	}
-	
-	public static String firstCharToUpperCase(String s) {
-		if(isBlank(s))
-			return s;
-		return s.substring(0, 1).toUpperCase()+s.substring(1, s.length());
-	}
-	
 	public static String humpToUnderline(String s) {
-		if(isBlank(s))
-			return s;
 		String str = "";
 		for(int i=0;i<s.length();i++){
 			char c = s.charAt(i);

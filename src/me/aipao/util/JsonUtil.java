@@ -29,19 +29,12 @@ import com.jfinal.json.Json;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class JsonUtil {
 
-	public static Map<String, Object> parse(String s) {
-		return Json.getJson().parse(s, Map.class);
+	public static <T> T parse(String s, Class<T> type) {
+		return Json.getJson().parse(s, type);
 	}
 	
-	public static <T> T nextNode(Map currentNode, String path) {
-		if (path.matches("\\w+\\[\\d+\\]")) {
-			String key = path.substring(0,path.indexOf('['));
-			List list = (List) currentNode.get(key);
-			int index = Integer.parseInt(path.substring(path.indexOf('[')+1, path.lastIndexOf(']')));
-			return (T) list.get(index);
-		}else {
-			return (T) currentNode.get(path);
-		}
+	public static Map<String, Object> parse(String s) {
+		return Json.getJson().parse(s, Map.class);
 	}
 	
 	public static <T> T getNode(Map root,String path) {
@@ -53,4 +46,14 @@ public class JsonUtil {
 		return nextNode(currentNode, array[array.length-1]);
 	}
 	
+	private static <T> T nextNode(Map currentNode, String path) {
+		if (path.matches("\\w+\\[\\d+\\]")) {
+			String key = path.substring(0,path.indexOf('['));
+			List list = (List) currentNode.get(key);
+			int index = Integer.parseInt(path.substring(path.indexOf('[')+1, path.lastIndexOf(']')));
+			return (T) list.get(index);
+		}else {
+			return (T) currentNode.get(path);
+		}
+	}
 }

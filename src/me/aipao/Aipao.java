@@ -16,9 +16,10 @@
 package me.aipao;
 
 import me.aipao.model._MappingKit;
+import me.aipao.web.AdminController;
+import me.aipao.web.GlobalInterceptor;
 import me.aipao.web.RunController;
 import me.aipao.web.UserController;
-import me.aipao.web.UserInterceptor;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
@@ -51,24 +52,26 @@ import com.jfinal.plugin.scheduler.SchedulerPlugin;
 public class Aipao extends JFinalConfig {
 
 	public Aipao() {
-		loadPropertyFile("config.txt");
+		loadPropertyFile(Ctx.cfgFileName);
 	}
 
 	@Override
 	public void configConstant(Constants me) {
+		me.setJsonDatePattern(Ctx.datePattern);
 		me.setJsonFactory(new FastJsonFactory());
-		me.setDevMode(Const.JF.devMode);
+		me.setDevMode(Ctx.JF.devMode);
 	}
 
 	@Override
 	public void configRoute(Routes me) {
+		me.add("admin", AdminController.class);
 		me.add("user", UserController.class);
 		me.add("run", RunController.class);
 	}
 
 	@Override
 	public void configPlugin(Plugins me) {
-		C3p0Plugin c3p0 = new C3p0Plugin(Const.Jdbc.url, Const.Jdbc.user, Const.Jdbc.pass);
+		C3p0Plugin c3p0 = new C3p0Plugin(Ctx.Jdbc.url, Ctx.Jdbc.user, Ctx.Jdbc.pass);
 		me.add(c3p0);
 		
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0);
@@ -78,12 +81,12 @@ public class Aipao extends JFinalConfig {
 		
 		me.add(new EhCachePlugin());
 		
-		me.add(new SchedulerPlugin(1, "runner.txt"));
+		me.add(new SchedulerPlugin(1, Ctx.jobFileName));
 	}
 
 	@Override
 	public void configInterceptor(Interceptors me) {
-		me.addGlobalActionInterceptor(new UserInterceptor());
+		me.addGlobalActionInterceptor(new GlobalInterceptor());
 	}
 
 	@Override
@@ -93,6 +96,13 @@ public class Aipao extends JFinalConfig {
 
 	public static void main(String[] args) {
 		JFinal.start("webapp", 8080, "/", 5);
+		//2ea1bc86fc4c4050a36a9126bfdcb770
+		//redmin:869055025453345
+		//vivo:862624026488076
+		//String imei = "869055025453345";
+		//String key = Cypher.generateKey();
+		//String enc = Cypher.encrypt(imei, key);
+		//System.out.println(HashKit.md5("862624026488076"));
 	}
 
 }
