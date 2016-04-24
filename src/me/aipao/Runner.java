@@ -65,8 +65,20 @@ public class Runner implements Runnable {
 	
 	private final long minDutyMsLeft = maxTimes*1000;
 	
-	public long dutyMsLeft() {
+	public static void main(String[] args) {
+		//printMsg();
+		Runner runner = new Runner();
+		System.out.println(runner.dutyMsLeft());
+		System.out.println(runner.onDuty());
+	}
+	
+	private static Time currenTime() {
 		Time time = new Time(new Date().getTime());
+		return Time.valueOf(time.toString());
+	}
+	
+	public long dutyMsLeft() {
+		Time time = currenTime();
 		if (time.after(time1)&&time.before(time2)) {
 			return time2.getTime()-time.getTime();
 		}
@@ -143,25 +155,24 @@ public class Runner implements Runnable {
 	public int run(Run run) {
 		
 		if (!onDuty()) {
+			System.out.println("////////////////Runner idle////////////////");
 			return 0;
 		}
 		
 		if (!DateUtil.isToday(run.getEndTime())) {
-			
+			System.out.println("////////////////Runner logining////////////////");
 			login(run);
+			System.out.println("run:"+run.toJson());
 			return 1;
 			
 		}else {
-			
+			System.out.println("////////////////Runner applying////////////////");
 			apply(run);
+			System.out.println("run:"+run.toJson());
 			return 2;
 			
 		}
 
-	}
-	
-	public static void main(String[] args) {
-		printMsg();
 	}
 	
 	@Override
