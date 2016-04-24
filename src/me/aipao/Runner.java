@@ -167,7 +167,7 @@ public class Runner implements Runnable {
 	@Override
 	public void run() {
 		printMsg();
-		List<Run> runs = Run.dao.find("select * from run where startTime is null or endTime is null or TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
+		List<Run> runs = Run.dao.find("select * from run where endTime is null or TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
 		for (Run run : runs) {
 			run(run);
 		}
