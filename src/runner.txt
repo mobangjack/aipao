@@ -6,9 +6,9 @@ runner.class=me.aipao.Runner
 #runner.type=cron
 #runner.expr=* * * * *
 
-#每隔480秒执行一次
+#每隔10秒执行一次
 runner.type=fixedRate
-runner.expr=480
+runner.expr=10
 
 #每隔5秒(任务一个接着一个)执行一次
 #runner.type=fixedDelay

@@ -159,10 +159,6 @@ public class Runner implements Runnable {
 					
 					apply(run);
 					
-				}else {
-					
-					suspend(run);
-					
 				}
 				
 			}
