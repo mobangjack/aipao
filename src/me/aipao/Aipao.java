@@ -15,9 +15,6 @@
  */
 package me.aipao;
 
-import java.sql.Time;
-import java.util.Date;
-
 import me.aipao.model._MappingKit;
 import me.aipao.web.AdminController;
 import me.aipao.web.GlobalInterceptor;
@@ -30,6 +27,7 @@ import com.jfinal.config.Interceptors;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.config.Plugins;
 import com.jfinal.config.Routes;
+import com.jfinal.core.JFinal;
 import com.jfinal.json.FastJsonFactory;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
@@ -97,18 +95,7 @@ public class Aipao extends JFinalConfig {
 	}
 
 	public static void main(String[] args) {
-		Time time = new Time(new Date().getTime());
-		
-		System.out.println(time);
-		//System.out.println(time1.);
-		//JFinal.start("webapp", 8080, "/", 5);
-		//2ea1bc86fc4c4050a36a9126bfdcb770
-		//redmin:869055025453345
-		//vivo:862624026488076
-		//String imei = "869055025453345";
-		//String key = Cypher.generateKey();
-		//String enc = Cypher.encrypt(imei, key);
-		//System.out.println(HashKit.md5("862624026488076"));
+		JFinal.start("webapp", 8080, "/", 5);
 	}
 
 }

@@ -859,3 +859,59 @@ java.lang.IllegalStateException: port: 8080 already in use!
 	at com.jfinal.server.JettyServer.start(JettyServer.java:65)
 	at com.jfinal.core.JFinal.start(JFinal.java:154)
 	at me.aipao.Aipao.main(Aipao.java:98)
+
+2016-04-25 17:40:29
+[ERROR]-[Thread: pool-1-thread-1]-[me.aipao.Runner.run()]: Exception occured when call Runner.run 
+java.lang.NullPointerException
+	at me.aipao.Runner.login(Runner.java:119)
+	at me.aipao.Runner.run(Runner.java:232)
+	at me.aipao.Runner.run(Runner.java:252)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+2016-04-25 17:40:38
+[ERROR]-[Thread: pool-1-thread-1]-[me.aipao.Runner.run()]: Exception occured when call Runner.run 
+java.lang.NullPointerException
+	at me.aipao.Runner.login(Runner.java:119)
+	at me.aipao.Runner.run(Runner.java:232)
+	at me.aipao.Runner.run(Runner.java:252)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+2016-04-25 17:41:48
+[ERROR]-[Thread: pool-1-thread-1]-[me.aipao.Runner.run()]: Exception occured when call Runner.run 
+java.lang.NullPointerException
+	at me.aipao.Runner.login(Runner.java:121)
+	at me.aipao.Runner.run(Runner.java:234)
+	at me.aipao.Runner.run(Runner.java:254)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+2016-04-25 17:41:58
+[ERROR]-[Thread: pool-1-thread-1]-[me.aipao.Runner.run()]: Exception occured when call Runner.run 
+java.lang.NullPointerException
+	at me.aipao.Runner.login(Runner.java:121)
+	at me.aipao.Runner.run(Runner.java:234)
+	at me.aipao.Runner.run(Runner.java:254)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.util.concurrent.FutureTask.runAndReset(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)

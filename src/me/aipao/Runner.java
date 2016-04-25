@@ -73,6 +73,7 @@ public class Runner implements Runnable {
 		//Runner runner = new Runner();
 		//System.out.println(runner.dutyMsLeft());
 		//System.out.println(runner.onDuty());
+		//System.out.println(HttpMgr.me.endSchoolRun("2ea1bc86fc4c4050a36a9126bfdcb771", "2ea1bc86fc4c4050a36a9126bfdcb771", 5000, 2000, 800, 2000));
 	}
 	
 	private static Time currenTime() {
@@ -110,10 +111,8 @@ public class Runner implements Runnable {
 		
 		Map<String, Object> map = JsonUtil.parse(result);
 		
-		Map<String, Object> data = (Map) map.get("Data");
-		
 		//{"Success":false,"ErrCode":7,"ErrMsg":"无此验证码"}
-		Boolean success = (Boolean) data.get("Success");
+		Boolean success = (Boolean) map.get("Success");
 		
 		if (!success) {
 			msg = "fail to login remote server.imei="+run.getImei()+",result="+result;
@@ -122,6 +121,8 @@ public class Runner implements Runnable {
 			return false;
 		}
 		
+		Map<String, Object> data = (Map) map.get("Data");
+		
 		String token = (String) data.get("Token");
 		
 		Integer userId = (Integer) data.get("UserId");
@@ -129,11 +130,11 @@ public class Runner implements Runnable {
 		result = HttpMgr.me.setLastLatLng(token, userId, run.getFieldId(), run.getLastLat(), run.getLastLng());
 		
 		map = JsonUtil.parse(result);
-		data = (Map) map.get("Data");
-		success = (Boolean) data.get("Success");
+		
+		success = (Boolean) map.get("Success");
 		
 		if (!success) {
-			msg = "setLastLatLng failed.result="+result;
+			msg = "setLastLatLng failed.result="+result+",task pending...";
 			LOG.info(msg);
 			System.out.println(msg);
 			return false;
@@ -142,8 +143,8 @@ public class Runner implements Runnable {
 		result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
 		
 		map = JsonUtil.parse(result);
-		data = (Map) map.get("Data");
-		success = (Boolean) data.get("Success");
+		
+		success = (Boolean) map.get("Success");
 		
 		//Power weak:{Success:false,ErrCode:11,ErrMsg:体力不足}
 		if (!success) {
@@ -151,8 +152,8 @@ public class Runner implements Runnable {
 			LOG.info(msg);
 			System.out.println(msg);
 			
-			Integer errCode = (Integer) data.get("ErrCode");
-			String errMsg = (String) data.get("ErrMsg");
+			Integer errCode = (Integer) map.get("ErrCode");
+			String errMsg = (String) map.get("ErrMsg");
 			if (errCode == 11 && errMsg.equals("体力不够")) {
 				msg = "power weak,trying to buy power...";
 				LOG.info(msg);
@@ -160,9 +161,10 @@ public class Runner implements Runnable {
 				
 				result = HttpMgr.me.buyPower(token, 10);
 				map = JsonUtil.parse(result);
-				data = (Map) map.get("Data");
-				success = (Boolean) data.get("Success");
+				success = (Boolean) map.get("Success");
+				
 				if (success) {
+					
 					msg = "buyPower success.result="+result+",trying to startSchoolRun again...";
 					LOG.info(msg);
 					System.out.println(msg);
@@ -170,8 +172,8 @@ public class Runner implements Runnable {
 					result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
 					
 					map = JsonUtil.parse(result);
-					data = (Map) map.get("Data");
-					success = (Boolean) data.get("Success");
+					
+					success = (Boolean) map.get("Success");
 					
 					if (!success) {
 						msg = "startSchoolRun failed again (after buying power).result="+result+",this run is going to be suspendeding...";
@@ -179,6 +181,7 @@ public class Runner implements Runnable {
 						System.out.println(msg);
 						return false;
 					}
+					
 				}else {
 					msg = "buyPower failed.result="+result+",this run is going to be suspendeding...";
 					LOG.info(msg);
@@ -188,7 +191,6 @@ public class Runner implements Runnable {
 			}
 			return false;
 		}
-		
 		
 		data = (Map) map.get("Data");
 		
@@ -250,7 +252,13 @@ public class Runner implements Runnable {
 		printMsg();
 		List<Run> runs = Run.dao.find("select * from run where endTime is null or TO_DAYS(endTime)<TO_DAYS(CURRENT_DATE)");
 		for (Run run : runs) {
-			run(run);
+			try {
+				run(run);
+			} catch (Exception e) {
+				e.printStackTrace();
+				LOG.error("Exception occured when call Runner.run ", e);
+			}
+			
 		}
 	}
 	
