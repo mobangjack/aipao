@@ -27,6 +27,7 @@ import me.aipao.util.RandomUtil;
 
 import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
+import com.jfinal.log.Log;
 
 
 /**
@@ -47,6 +48,8 @@ import com.jfinal.kit.PropKit;
 @SuppressWarnings({"rawtypes","unchecked"})
 public class Runner implements Runnable {
 
+	private static final Log LOG = Log.getLog(Runner.class);
+	
 	private final Prop runProp = PropKit.use("run.txt");
 	private final Prop timeProp = PropKit.use("time.txt");
 	
@@ -101,6 +104,8 @@ public class Runner implements Runnable {
 	
 	public boolean login(Run run) {
 		
+		String msg = "";
+		
 		String result = HttpMgr.me.login(run.getImei());
 		
 		Map<String, Object> map = JsonUtil.parse(result);
@@ -108,6 +113,14 @@ public class Runner implements Runnable {
 		Map<String, Object> data = (Map) map.get("Data");
 		
 		//{"Success":false,"ErrCode":7,"ErrMsg":"无此验证码"}
+		Boolean success = (Boolean) data.get("Success");
+		
+		if (!success) {
+			msg = "fail to login remote server.imei="+run.getImei()+",result="+result;
+			LOG.info(msg);
+			System.out.println(msg);
+			return false;
+		}
 		
 		String token = (String) data.get("Token");
 		
@@ -115,11 +128,64 @@ public class Runner implements Runnable {
 		
 		result = HttpMgr.me.setLastLatLng(token, userId, run.getFieldId(), run.getLastLat(), run.getLastLng());
 		
+		map = JsonUtil.parse(result);
+		data = (Map) map.get("Data");
+		success = (Boolean) data.get("Success");
+		
+		if (!success) {
+			msg = "setLastLatLng failed.result="+result;
+			LOG.info(msg);
+			System.out.println(msg);
+			return false;
+		}
+		
 		result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
 		
 		map = JsonUtil.parse(result);
+		data = (Map) map.get("Data");
+		success = (Boolean) data.get("Success");
 		
-		//Power weak
+		//Power weak:{Success:false,ErrCode:11,ErrMsg:体力不足}
+		if (!success) {
+			msg = "startSchoolRun failed.result="+result+",trying to buy power...";
+			LOG.info(msg);
+			System.out.println(msg);
+			
+			Integer errCode = (Integer) data.get("ErrCode");
+			String errMsg = (String) data.get("ErrMsg");
+			if (errCode == 11 && errMsg.equals("体力不够")) {
+				result = HttpMgr.me.buyPower(token, 10);
+				map = JsonUtil.parse(result);
+				data = (Map) map.get("Data");
+				success = (Boolean) data.get("Success");
+				if (success) {
+					msg = "buyPower success.result="+result+",trying to startSchoolRun again...";
+					LOG.info(msg);
+					System.out.println(msg);
+					
+					result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
+					
+					map = JsonUtil.parse(result);
+					data = (Map) map.get("Data");
+					success = (Boolean) data.get("Success");
+					
+					if (!success) {
+						msg = "startSchoolRun failed again (after buying power).result="+result+",this run is going to be suspendeding...";
+						LOG.info(msg);
+						System.out.println(msg);
+						return false;
+					}
+				}else {
+					msg = "buyPower failed.result="+result+",this run is going to be suspendeding...";
+					LOG.info(msg);
+					System.out.println(msg);
+					return false;
+				}
+			}
+			return false;
+		}
+		
+		
 		data = (Map) map.get("Data");
 		
 		String runId = (String) data.get("RunId");
@@ -159,20 +225,20 @@ public class Runner implements Runnable {
 			return 0;
 		}
 		
-		if (!DateUtil.isToday(run.getEndTime())) {
+		if (DateUtil.notToday(run.getStartTime())) {
 			System.out.println("////////////////Runner logining////////////////");
 			login(run);
-			System.out.println("run:"+run.toJson());
 			return 1;
 			
-		}else {
+		}
+		
+		if(due(run)) {
 			System.out.println("////////////////Runner applying////////////////");
 			apply(run);
-			System.out.println("run:"+run.toJson());
 			return 2;
-			
 		}
-
+		
+		return 3;
 	}
 	
 	@Override
