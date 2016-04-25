@@ -70,9 +70,9 @@ public class Runner implements Runnable {
 	
 	public static void main(String[] args) {
 		//printMsg();
-		Runner runner = new Runner();
-		System.out.println(runner.dutyMsLeft());
-		System.out.println(runner.onDuty());
+		//Runner runner = new Runner();
+		//System.out.println(runner.dutyMsLeft());
+		//System.out.println(runner.onDuty());
 	}
 	
 	private static Time currenTime() {
@@ -147,13 +147,17 @@ public class Runner implements Runnable {
 		
 		//Power weak:{Success:false,ErrCode:11,ErrMsg:体力不足}
 		if (!success) {
-			msg = "startSchoolRun failed.result="+result+",trying to buy power...";
+			msg = "startSchoolRun failed.result="+result+"";
 			LOG.info(msg);
 			System.out.println(msg);
 			
 			Integer errCode = (Integer) data.get("ErrCode");
 			String errMsg = (String) data.get("ErrMsg");
 			if (errCode == 11 && errMsg.equals("体力不够")) {
+				msg = "power weak,trying to buy power...";
+				LOG.info(msg);
+				System.out.println(msg);
+				
 				result = HttpMgr.me.buyPower(token, 10);
 				map = JsonUtil.parse(result);
 				data = (Map) map.get("Data");
