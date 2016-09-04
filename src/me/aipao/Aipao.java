@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2015, Mobangjack 莫帮杰 (mobangjack@foxmail.com).
+ * Copyright (c) 2011-2016, Mobangjack 莫帮杰 (mobangjack@foxmail.com).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

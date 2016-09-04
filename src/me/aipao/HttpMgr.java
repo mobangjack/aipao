@@ -69,7 +69,7 @@ public class HttpMgr {
 	
 	public String login(String imei) {
 		System.out.println("-------------------HttpMgr.login---------------------");
-		String url = rootUrl + "%7Btoken%7D/QM_Users/Login_Android?IMEICode="+imei;
+		String url = rootUrl + "%7Btoken%7D/QM_Users/Login_AndroidSchool?IMEICode="+imei;
 		System.out.println("url="+url);
 		String str = HttpUtil.get(url);
 		System.out.println("result="+str);
