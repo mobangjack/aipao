@@ -2,10 +2,11 @@
 jfinal.devMode = true
 
 #Runner HttpMgr
-httpMgr.rootUrl = http://client2.aipao.me/api/
+httpMgr.rootUrl = http://client3.aipao.me/api/
+httpMgr.version = 1.27
 
-#WX AppId
-wx.appId = wx668004190386482e
+#WeChat AppId
+wechat.appId = wx668004190386482e
 
 #Database
 jdbc.url = jdbc:mysql://localhost/aipao?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull

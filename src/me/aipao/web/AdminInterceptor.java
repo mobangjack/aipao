@@ -15,7 +15,7 @@
  */
 package me.aipao.web;
 
-import me.aipao.Ctx;
+import me.aipao.Const;
 import me.aipao.model.Admin;
 import me.aipao.util.CacheUtil;
 import me.aipao.util.DateUtil;
@@ -32,8 +32,8 @@ public class AdminInterceptor implements Interceptor {
 	@Override
 	public void intercept(Invocation inv) {
 		Controller c = inv.getController();
-		String token = c.getAttr(Ctx.Attr.token);
-		Admin admin = CacheUtil.get(Ctx.Cache.admin, token);
+		String token = c.getAttr(Const.AttrName.token);
+		Admin admin = CacheUtil.get(Const.CacheName.admin, token);
 		if (admin == null) {
 			admin = Admin.dao.findFirst("select * from admin where token=? limit 1", token);
 			if (admin == null) {
@@ -41,16 +41,16 @@ public class AdminInterceptor implements Interceptor {
 			}else {
 				if (admin.getLogin() == null) {
 					Result.unauth("token out of date").render(c);
-				}else if (DateUtil.isExpire(admin.getLogin(), CacheUtil.getTimeToLiveSeconds(Ctx.Cache.admin)*1000)) {
+				}else if (DateUtil.isExpire(admin.getLogin(), CacheUtil.getTimeToLiveSeconds(Const.CacheName.admin)*1000)) {
 					Result.unauth("token expired").render(c);
 				}else {
-					CacheUtil.put(Ctx.Attr.admin, token, admin);
-					c.setAttr(Ctx.Attr.admin, admin);
+					CacheUtil.put(Const.AttrName.admin, token, admin);
+					c.setAttr(Const.AttrName.admin, admin);
 					inv.invoke();
 				}
 			}
 		}else {
-			c.setAttr(Ctx.Attr.admin, admin);
+			c.setAttr(Const.AttrName.admin, admin);
 			inv.invoke();
 		}
 	}

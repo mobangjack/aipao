@@ -1,3 +1,4 @@
+########################任务调度参数##########################
 #是否启用该任务
 runner.enable=true
 #任务类名
@@ -13,3 +14,20 @@ runner.expr=10
 #每隔5秒(任务一个接着一个)执行一次
 #runner.type=fixedDelay
 #runner.expr=5
+
+########################业务默认参数##########################
+runner.imei = 29108b15533a45a0b75ce83763e818d9
+runner.fieldId = 99
+runner.lastLat = 30.545273f
+runner.lastLng = 114.365715f
+runner.lat = 30.544746f
+runner.lng = 114.365715f
+runner.scores = 5000
+runner.coins = 2000
+runner.minTime = 480
+runner.maxTime = 600
+runner.length = 2000
+
+########################业务执行时隙##########################
+runner.timeslots = 6:00:00-8:30:00,16:00:00-18:30:00,20:00:00-23:00:00
+

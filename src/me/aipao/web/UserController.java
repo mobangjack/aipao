@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import me.aipao.Ctx;
+import me.aipao.Const;
 import me.aipao.model.User;
 import me.aipao.util.StrUtil;
 
@@ -64,13 +64,13 @@ public class UserController extends BaseController {
 		}else {
 			String token = user.getToken();
 			if (StrUtil.notBlank(token)) {
-				CacheKit.remove(Ctx.Cache.user, token);
+				CacheKit.remove(Const.CacheName.user, token);
 			}
 			token = UUID.randomUUID().toString().replace("-", "");
 			user.setToken(token);
 			user.setLogin(new Date());
 			user.update();
-			CacheKit.put(Ctx.Cache.user, token, user);
+			CacheKit.put(Const.CacheName.user, token, user);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("token", token);
 			success(map);

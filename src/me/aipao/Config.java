@@ -49,17 +49,17 @@ import com.jfinal.plugin.scheduler.SchedulerPlugin;
  * <li>每天只记录一次有效长跑成绩，一天内跑多次的按一次计算<br>
  * <ul>
  */
-public class Aipao extends JFinalConfig {
+public class Config extends JFinalConfig {
 
-	public Aipao() {
-		loadPropertyFile(Ctx.cfgFileName);
+	public Config() {
+		loadPropertyFile(Const.configFileName);
 	}
 
 	@Override
 	public void configConstant(Constants me) {
-		me.setJsonDatePattern(Ctx.datePattern);
+		me.setJsonDatePattern(Const.datePattern);
 		me.setJsonFactory(new FastJsonFactory());
-		me.setDevMode(Ctx.JF.devMode);
+		me.setDevMode(Const.JF.devMode);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class Aipao extends JFinalConfig {
 
 	@Override
 	public void configPlugin(Plugins me) {
-		C3p0Plugin c3p0 = new C3p0Plugin(Ctx.Jdbc.url, Ctx.Jdbc.user, Ctx.Jdbc.pass);
+		C3p0Plugin c3p0 = new C3p0Plugin(Const.Jdbc.url, Const.Jdbc.user, Const.Jdbc.pass);
 		me.add(c3p0);
 		
 		ActiveRecordPlugin arp = new ActiveRecordPlugin(c3p0);
@@ -81,7 +81,7 @@ public class Aipao extends JFinalConfig {
 		
 		me.add(new EhCachePlugin());
 		
-		me.add(new SchedulerPlugin(1, "runner.txt"));
+		me.add(new SchedulerPlugin(1, Const.runnerFileName));
 	}
 
 	@Override

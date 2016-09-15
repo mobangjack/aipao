@@ -15,7 +15,7 @@
  */
 package me.aipao.web;
 
-import me.aipao.Ctx;
+import me.aipao.Const;
 import me.aipao.model.User;
 
 import com.jfinal.core.Controller;
@@ -26,7 +26,7 @@ import com.jfinal.core.Controller;
 public class BaseController extends Controller {
 
 	public User getUser() {
-		return getAttr(Ctx.Attr.user);
+		return getAttr(Const.AttrName.user);
 	}
 	
 	public void success(String msg, Object data) {

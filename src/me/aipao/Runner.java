@@ -15,7 +15,6 @@
  */
 package me.aipao;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +24,6 @@ import me.aipao.util.DateUtil;
 import me.aipao.util.JsonUtil;
 import me.aipao.util.RandomUtil;
 
-import com.jfinal.kit.Prop;
-import com.jfinal.kit.PropKit;
 import com.jfinal.log.Log;
 
 
@@ -50,58 +47,13 @@ public class Runner implements Runnable {
 
 	private static final Log LOG = Log.getLog(Runner.class);
 	
-	private final Prop runProp = PropKit.use("run.txt");
-	private final Prop timeProp = PropKit.use("time.txt");
+	private Timeslots timeslots = Const.Runner.timeslots;
 	
-	private final Time time1 = Time.valueOf(timeProp.get("time1", "6:00:00"));
-	private final Time time2 = Time.valueOf(timeProp.get("time2", "8:30:00"));
-	private final Time time3 = Time.valueOf(timeProp.get("time3", "16:00:00"));
-	private final Time time4 = Time.valueOf(timeProp.get("time4", "18:30:00"));
-	private final Time time5 = Time.valueOf(timeProp.get("time5", "20:00:00"));
-	private final Time time6 = Time.valueOf(timeProp.get("time6", "23:00:00"));
-	
-	private final Integer coins = runProp.getInt("coins", 2000);
-	private final Integer scores = runProp.getInt("scores", 5000);
-	private final Integer minTimes = runProp.getInt("minTimes", 480);
-	private final Integer maxTimes = runProp.getInt("maxTimes", 600);
-	private final Integer length = runProp.getInt("length", 2000);
-	
-	private final long minDutyMsLeft = maxTimes*1000;
-	
-	public static void main(String[] args) {
-		//printMsg();
-		//Runner runner = new Runner();
-		//System.out.println(runner.dutyMsLeft());
-		//System.out.println(runner.onDuty());
-		//System.out.println(HttpMgr.me.endSchoolRun("2ea1bc86fc4c4050a36a9126bfdcb771", "2ea1bc86fc4c4050a36a9126bfdcb771", 5000, 2000, 800, 2000));
-	}
-	
-	private static Time currenTime() {
-		Time time = new Time(new Date().getTime());
-		return Time.valueOf(time.toString());
-	}
-	
-	public long dutyMsLeft() {
-		Time time = currenTime();
-		if (time.after(time1)&&time.before(time2)) {
-			return time2.getTime()-time.getTime();
-		}
-		if (time.after(time3)&&time.before(time4)) {
-			return time4.getTime()-time.getTime();
-		}
-		if (time.after(time5)&&time.before(time6)) {
-			return time6.getTime()-time.getTime();
-		}
-		return 0;
-	}
-	
-	public boolean onDuty() {
-		return dutyMsLeft() > minDutyMsLeft;
-	}
-	
-	public boolean due(Run run) {
-		return (new Date().getTime()-run.getStartTime().getTime() >= run.getTimes()*1000);
-	}
+	private Integer coins = Const.Runner.coins;
+	private Integer scores = Const.Runner.scores;
+	private Integer minTime = Const.Runner.minTime;
+	private Integer maxTime = Const.Runner.maxTime;
+	private Integer length = Const.Runner.length;
 	
 	public boolean login(Run run) {
 		
@@ -115,7 +67,7 @@ public class Runner implements Runnable {
 		Boolean success = (Boolean) map.get("Success");
 		
 		if (!success) {
-			msg = "fail to login remote server.imei="+run.getImei()+",result="+result;
+			msg = "runner.login failed.INFO: imei="+run.getImei()+",result="+result;
 			LOG.info(msg);
 			System.out.println(msg);
 			return false;
@@ -134,7 +86,7 @@ public class Runner implements Runnable {
 		success = (Boolean) map.get("Success");
 		
 		if (!success) {
-			msg = "setLastLatLng failed.result="+result+",task pending...";
+			msg = "runner.setLastLatLng failed.result="+result+",task pending...";
 			LOG.info(msg);
 			System.out.println(msg);
 			return false;
@@ -148,14 +100,14 @@ public class Runner implements Runnable {
 		
 		//Power weak:{Success:false,ErrCode:11,ErrMsg:体力不足}
 		if (!success) {
-			msg = "startSchoolRun failed.result="+result+"";
+			msg = "runner.startSchoolRun failed.result="+result+"";
 			LOG.info(msg);
 			System.out.println(msg);
 			
 			Integer errCode = (Integer) map.get("ErrCode");
 			String errMsg = (String) map.get("ErrMsg");
 			if (errCode == 11 && errMsg.equals("体力不够")) {
-				msg = "power weak,trying to buy power...";
+				msg = "Runner INFO: power weak,trying to buy power...";
 				LOG.info(msg);
 				System.out.println(msg);
 				
@@ -165,7 +117,7 @@ public class Runner implements Runnable {
 				
 				if (success) {
 					
-					msg = "buyPower success.result="+result+",trying to startSchoolRun again...";
+					msg = "Runner INFO: buyPower success.result="+result+",trying to startSchoolRun again...";
 					LOG.info(msg);
 					System.out.println(msg);
 					
@@ -176,14 +128,14 @@ public class Runner implements Runnable {
 					success = (Boolean) map.get("Success");
 					
 					if (!success) {
-						msg = "startSchoolRun failed again (after buying power).result="+result+",this run is going to be suspendeding...";
+						msg = "Runner INFO: startSchoolRun failed again (after buying power).result="+result+",this run is going to be suspendeding...";
 						LOG.info(msg);
 						System.out.println(msg);
 						return false;
 					}
 					
 				}else {
-					msg = "buyPower failed.result="+result+",this run is going to be suspendeding...";
+					msg = "Runner INFO: buyPower failed.result="+result+",this run is going to be suspendeding...";
 					LOG.info(msg);
 					System.out.println(msg);
 					return false;
@@ -203,7 +155,7 @@ public class Runner implements Runnable {
 		run.setFieldId(fieldId);
 		run.setScores(scores);
 		run.setCoins(coins);
-		run.setTimes(RandomUtil.nextInt(minTimes, maxTimes));
+		run.setTimes(RandomUtil.nextInt(minTime, maxTime));
 		run.setLength(length);
 		run.setStartTime(new Date());
 		run.setEndTime(null);
@@ -213,7 +165,7 @@ public class Runner implements Runnable {
 		return true;
 	}
 	
-	public boolean apply(Run run) {
+	public boolean submit(Run run) {
 		
 		String result = HttpMgr.me.endSchoolRun(run.getToken(), run.getRunId(), run.getScores(), run.getCoins(), run.getTimes(), run.getLength());
 		
@@ -223,24 +175,35 @@ public class Runner implements Runnable {
 		
 		return true;
 	}
-
+	
+	public boolean onDuty() {
+		for (Timeslot timeslot : timeslots) {
+			if(timeslot.millisLeft() > 1000*maxTime)
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean due(Run run) {
+		return (new Date().getTime()-run.getStartTime().getTime() >= run.getTimes()*1000);
+	}
+	
 	public int run(Run run) {
 		
 		if (!onDuty()) {
-			System.out.println("////////////////Runner idle////////////////");
+			System.out.println("////////////////////////// runner idle //////////////////////////");
 			return 0;
 		}
 		
 		if (DateUtil.notToday(run.getStartTime())) {
-			System.out.println("////////////////Runner logining////////////////");
+			System.out.println("////////////////////////// runner login //////////////////////////");
 			login(run);
 			return 1;
-			
 		}
 		
 		if(due(run)) {
-			System.out.println("////////////////Runner applying////////////////");
-			apply(run);
+			System.out.println("////////////////////////// runner submit //////////////////////////");
+			submit(run);
 			return 2;
 		}
 		
@@ -256,7 +219,7 @@ public class Runner implements Runnable {
 				run(run);
 			} catch (Exception e) {
 				e.printStackTrace();
-				LOG.error("Exception occured when call Runner.run ", e);
+				LOG.error("Exception occured in Runner.run", e);
 			}
 			
 		}
@@ -266,13 +229,18 @@ public class Runner implements Runnable {
 		String bound = "|----------------------------------------------------------------------|";
 		StringBuilder sb = new StringBuilder();
 		sb.append(bound);
-		sb.append("\n|*************{");
+		sb.append("\n|**************");
 		sb.append(DateUtil.formatCurrent());
-		sb.append(":Runner scanning...");
-		sb.append("}*****************|\n");
+		sb.append(": Runner Scanning...");
+		sb.append("*****************|\n");
 		sb.append(bound);
 		System.out.println(sb);
 	}
 	
+	public static void main(String[] args) {
+		printMsg();
+		Runner runner = new Runner();
+		System.out.println(runner.onDuty());
+	}
 	
 }

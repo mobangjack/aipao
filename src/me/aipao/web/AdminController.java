@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.aipao.Ctx;
+import me.aipao.Const;
 import me.aipao.model.Admin;
 import me.aipao.model.Run;
 import me.aipao.model.User;
@@ -52,13 +52,13 @@ public class AdminController extends BaseController {
 		}else {
 			String token = admin.getToken();
 			if (StrUtil.notBlank(token)) {
-				CacheUtil.remove(Ctx.Cache.admin, token);
+				CacheUtil.remove(Const.CacheName.admin, token);
 			}
 			token = UUID.randomUUID().toString().replace("-", "");
 			admin.setToken(token);
 			admin.setLogin(new Date());
 			admin.update();
-			CacheUtil.put(Ctx.Cache.admin, token, admin);
+			CacheUtil.put(Const.CacheName.admin, token, admin);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("token", token);
 			success(map);
@@ -66,7 +66,7 @@ public class AdminController extends BaseController {
 	}
 
 	public void index() {
-		Admin admin = getAttr(Ctx.Attr.admin);
+		Admin admin = getAttr(Const.AttrName.admin);
 		Admin master = new Admin()._setAttrs(admin).remove("pass");
 		success(master);
 	}
