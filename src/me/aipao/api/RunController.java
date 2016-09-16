@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.web;
+package me.aipao.api;
 
 import java.util.Map;
 
@@ -82,7 +82,7 @@ public class RunController extends BaseController {
 	public void delete() {
 		User user = getUser();
 		if (StrKit.isBlank(user.getImei())) {
-			failure("you have not registerd your imei code yet");
+			failure("you have not registerd your imei yet");
 			return;
 		}
 		String imei = getPara("imei");
@@ -91,7 +91,7 @@ public class RunController extends BaseController {
 			return;
 		}
 		if (!user.getImei().equals(imei)) {
-			failure("this imei code doesn't look like your previous one");
+			failure("bad imei");
 			return;
 		}
 		Run.dao.deleteById(imei);

@@ -1090,3 +1090,57 @@ Caused by: java.lang.ClassNotFoundException: me.aipao.Aipao
 	at java.lang.Class.forName(Unknown Source)
 	at com.jfinal.core.JFinalFilter.createJFinalConfig(JFinalFilter.java:96)
 	... 16 more
+
+2016-09-16 10:43:20
+[WARN]-[Thread: qtp1112280004-25]-[com.jfinal.core.ActionHandler.handle()]: 404 Action Not Found: /aipao/admin/login?name=bj&pass=1314233&
+
+2016-09-16 11:07:22
+[ERROR]-[Thread: qtp1112280004-26]-[com.jfinal.core.ActionHandler.handle()]: /admin/checkUsers?
+com.jfinal.plugin.activerecord.ActiveRecordException: java.lang.NullPointerException
+	at com.jfinal.plugin.activerecord.Model.paginate(Model.java:290)
+	at com.jfinal.plugin.activerecord.Model.paginate(Model.java:364)
+	at me.aipao.api.AdminController.checkUsers(AdminController.java:76)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at com.jfinal.aop.Invocation.invoke(Invocation.java:73)
+	at me.aipao.api.AdminInterceptor.intercept(AdminInterceptor.java:49)
+	at com.jfinal.aop.Invocation.invoke(Invocation.java:67)
+	at me.aipao.api.GlobalInterceptor.intercept(GlobalInterceptor.java:38)
+	at com.jfinal.aop.Invocation.invoke(Invocation.java:67)
+	at com.jfinal.core.ActionHandler.handle(ActionHandler.java:74)
+	at com.jfinal.core.JFinalFilter.doFilter(JFinalFilter.java:72)
+	at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1307)
+	at org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:453)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:137)
+	at org.eclipse.jetty.security.SecurityHandler.handle(SecurityHandler.java:560)
+	at org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:231)
+	at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1072)
+	at org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:382)
+	at org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:193)
+	at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1006)
+	at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:135)
+	at org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:116)
+	at org.eclipse.jetty.server.Server.handle(Server.java:365)
+	at org.eclipse.jetty.server.AbstractHttpConnection.handleRequest(AbstractHttpConnection.java:485)
+	at org.eclipse.jetty.server.AbstractHttpConnection.headerComplete(AbstractHttpConnection.java:926)
+	at org.eclipse.jetty.server.AbstractHttpConnection$RequestHandler.headerComplete(AbstractHttpConnection.java:988)
+	at org.eclipse.jetty.http.HttpParser.parseNext(HttpParser.java:635)
+	at org.eclipse.jetty.http.HttpParser.parseAvailable(HttpParser.java:235)
+	at org.eclipse.jetty.server.AsyncHttpConnection.handle(AsyncHttpConnection.java:82)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint.handle(SelectChannelEndPoint.java:628)
+	at org.eclipse.jetty.io.nio.SelectChannelEndPoint$1.run(SelectChannelEndPoint.java:52)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:608)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:543)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.NullPointerException
+	at java.util.regex.Matcher.getTextLength(Unknown Source)
+	at java.util.regex.Matcher.reset(Unknown Source)
+	at java.util.regex.Matcher.<init>(Unknown Source)
+	at java.util.regex.Pattern.matcher(Unknown Source)
+	at com.jfinal.plugin.activerecord.dialect.Dialect.replaceOrderBy(Dialect.java:121)
+	at com.jfinal.plugin.activerecord.Model.doPaginate(Model.java:328)
+	at com.jfinal.plugin.activerecord.Model.paginate(Model.java:317)
+	at com.jfinal.plugin.activerecord.Model.paginate(Model.java:288)
+	... 36 more

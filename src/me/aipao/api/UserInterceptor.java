@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.web;
+package me.aipao.api;
 
-import javax.servlet.http.HttpServletRequest;
+import me.aipao.Const;
+import me.aipao.model.User;
+import me.aipao.util.CacheUtil;
+import me.aipao.util.DateUtil;
 
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
@@ -24,17 +27,30 @@ import com.jfinal.core.Controller;
 /**
  * @author 帮杰
  */
-public class GlobalInterceptor implements Interceptor {
+public class UserInterceptor implements Interceptor {
 
 	@Override
 	public void intercept(Invocation inv) {
 		Controller c = inv.getController();
-		HttpServletRequest request = c.getRequest();
-		String token = request.getHeader("token");
-		if (token == null || token.trim().isEmpty()) {
-			Result.unauth("unauthorized").render(c);
+		String token = c.getAttr(Const.AttrName.token);
+		User user = CacheUtil.get(Const.CacheName.user, token);
+		if (user == null) {
+			user = User.dao.findFirst("select * from user where token=? limit 1", token);
+			if (user == null) {
+				Result.unauth("token invalid").render(c);
+			}else {
+				if (user.getLogin() == null) {
+					Result.unauth("token out of date").render(c);
+				}else if (DateUtil.isExpire(user.getLogin(), CacheUtil.getTimeToLiveSeconds(Const.CacheName.user)*1000)) {
+					Result.unauth("token expired").render(c);
+				}else {
+					CacheUtil.put(Const.CacheName.user, token, user);
+					c.setAttr(Const.AttrName.user, user);
+					inv.invoke();
+				}
+			}
 		}else {
-			c.setAttr("token", token);
+			c.setAttr(Const.AttrName.user, user);
 			inv.invoke();
 		}
 	}

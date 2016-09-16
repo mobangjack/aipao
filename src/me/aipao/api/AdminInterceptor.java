@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.web;
+package me.aipao.api;
 
 import me.aipao.Const;
 import me.aipao.model.Admin;

@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.web;
+package me.aipao.api;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,6 +29,7 @@ import me.aipao.util.StrUtil;
 
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
+import com.jfinal.plugin.activerecord.Page;
 
 /**
  * @author 帮杰
@@ -72,12 +72,17 @@ public class AdminController extends BaseController {
 	}
 	
 	public void checkUsers() {
-		List<User> users = User.dao.find("select * from user");
+		Integer page = getParaToInt("p", 1);
+		Integer size = getParaToInt("n", 1);
+		//Page<Record> records = Db.paginate(page, size, "select u.id,u.name,r.*", "from user u inner join run r on u.imei=r.imei");
+		Page<User> users = User.dao.paginate(page, size, "select u.id,u.name,u.imei,u.login", "from user u");
 		success(users);
 	}
 	
 	public void checkRuns() {
-		List<Run> runs = Run.dao.find("select * from run");
+		Integer page = getParaToInt("p", 1);
+		Integer size = getParaToInt("n", 1);
+		Page<Run> runs = Run.dao.paginate(page, size, "select r.*", "from run r");
 		success(runs);
 	}
 	

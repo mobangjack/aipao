@@ -15,11 +15,11 @@
  */
 package me.aipao;
 
+import me.aipao.api.AdminController;
+import me.aipao.api.GlobalInterceptor;
+import me.aipao.api.RunController;
+import me.aipao.api.UserController;
 import me.aipao.model._MappingKit;
-import me.aipao.web.AdminController;
-import me.aipao.web.GlobalInterceptor;
-import me.aipao.web.RunController;
-import me.aipao.web.UserController;
 
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;

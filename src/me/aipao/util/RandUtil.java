@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.web.view;
+package me.aipao.util;
 
-import com.jfinal.render.IErrorRenderFactory;
-import com.jfinal.render.Render;
-
+import java.util.Random;
 
 /**
  * @author 帮杰
  */
-public class MyErrorRenderFactory implements IErrorRenderFactory {
+public class RandUtil {
 
-	@Override
-	public Render getRender(int errorCode, String view) {
-		return null;
+	public static int nextInt(int min, int max) {
+		int bound = max - min + 1;
+		Random random = new Random();
+		int offset = random.nextInt(bound);
+		return min + offset;
 	}
 
 }

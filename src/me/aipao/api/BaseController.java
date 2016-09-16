@@ -13,19 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.web.view;
+package me.aipao.api;
 
-import com.jfinal.render.Render;
+import me.aipao.Const;
+import me.aipao.model.User;
+
+import com.jfinal.core.Controller;
 
 /**
  * @author 帮杰
  */
-public class MyRender extends Render {
+public class BaseController extends Controller {
 
-	@Override
-	public void render() {
-		// TODO Auto-generated method stub
-
+	public User getUser() {
+		return getAttr(Const.AttrName.user);
+	}
+	
+	public void success(String msg, Object data) {
+		Result.success(msg, data).render(this);
+	}
+	
+	public void success(Object data) {
+		Result.create(0, "ok", data).render(this);
+	}
+	
+	public void success() {
+		Result.success("ok").render(this);
+	}
+	
+	public void failure(String msg) {
+		Result.failure(msg).render(this);
+	}
+	
+	public void failure() {
+		Result.failure("err").render(this);
 	}
 
 }

@@ -13,20 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.aipao.util;
+package me.aipao.api;
 
-import java.util.Random;
+import javax.servlet.http.HttpServletRequest;
+
+import com.jfinal.aop.Interceptor;
+import com.jfinal.aop.Invocation;
+import com.jfinal.core.Controller;
 
 /**
  * @author 帮杰
  */
-public class RandomUtil {
+public class GlobalInterceptor implements Interceptor {
 
-	public static int nextInt(int min, int max) {
-		int bound = max - min + 1;
-		Random random = new Random();
-		int offset = random.nextInt(bound);
-		return min + offset;
+	@Override
+	public void intercept(Invocation inv) {
+		Controller c = inv.getController();
+		HttpServletRequest request = c.getRequest();
+		String token = request.getHeader("token");
+		if (token == null || token.trim().isEmpty()) {
+			Result.unauth("unauthorized").render(c);
+		}else {
+			c.setAttr("token", token);
+			inv.invoke();
+		}
 	}
 
 }

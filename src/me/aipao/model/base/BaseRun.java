@@ -97,12 +97,12 @@ public abstract class BaseRun<M extends BaseRun<M>> extends Model<M> implements 
 		return get("coins");
 	}
 
-	public void setTimes(java.lang.Integer times) {
-		set("times", times);
+	public void setTime(java.lang.Integer time) {
+		set("time", time);
 	}
 
-	public java.lang.Integer getTimes() {
-		return get("times");
+	public java.lang.Integer getTime() {
+		return get("time");
 	}
 
 	public void setLength(java.lang.Integer length) {
@@ -111,14 +111,6 @@ public abstract class BaseRun<M extends BaseRun<M>> extends Model<M> implements 
 
 	public java.lang.Integer getLength() {
 		return get("length");
-	}
-
-	public void setResult(java.lang.String result) {
-		set("result", result);
-	}
-
-	public java.lang.String getResult() {
-		return get("result");
 	}
 
 	public void setStartTime(java.util.Date startTime) {
@@ -135,6 +127,14 @@ public abstract class BaseRun<M extends BaseRun<M>> extends Model<M> implements 
 
 	public java.util.Date getEndTime() {
 		return get("endTime");
+	}
+
+	public void setResult(java.lang.String result) {
+		set("result", result);
+	}
+
+	public java.lang.String getResult() {
+		return get("result");
 	}
 
 }

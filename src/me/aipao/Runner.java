@@ -22,7 +22,7 @@ import java.util.Map;
 import me.aipao.model.Run;
 import me.aipao.util.DateUtil;
 import me.aipao.util.JsonUtil;
-import me.aipao.util.RandomUtil;
+import me.aipao.util.RandUtil;
 
 import com.jfinal.log.Log;
 
@@ -155,7 +155,7 @@ public class Runner implements Runnable {
 		run.setFieldId(fieldId);
 		run.setScores(scores);
 		run.setCoins(coins);
-		run.setTimes(RandomUtil.nextInt(minTime, maxTime));
+		run.setTime(RandUtil.nextInt(minTime, maxTime));
 		run.setLength(length);
 		run.setStartTime(new Date());
 		run.setEndTime(null);
@@ -167,7 +167,7 @@ public class Runner implements Runnable {
 	
 	public boolean submit(Run run) {
 		
-		String result = HttpMgr.me.endSchoolRun(run.getToken(), run.getRunId(), run.getScores(), run.getCoins(), run.getTimes(), run.getLength());
+		String result = HttpMgr.me.endSchoolRun(run.getToken(), run.getRunId(), run.getScores(), run.getCoins(), run.getTime(), run.getLength());
 		
 		run.setEndTime(new Date());
 		run.setResult(result);
@@ -185,7 +185,7 @@ public class Runner implements Runnable {
 	}
 	
 	public boolean due(Run run) {
-		return (new Date().getTime()-run.getStartTime().getTime() >= run.getTimes()*1000);
+		return (new Date().getTime()-run.getStartTime().getTime() >= run.getTime()*1000);
 	}
 	
 	public int run(Run run) {
