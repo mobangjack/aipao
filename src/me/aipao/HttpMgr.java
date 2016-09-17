@@ -55,12 +55,14 @@ public class HttpMgr {
 		return ret;
 	}
 	
+	/*
 	public String login(String wxCode, String imei) {
 		System.out.println("-------------------HttpMgr.login---------------------");
 		String url = wxCode + "/QM_Users/Login?wxCode=" + wxCode + "&IMEI=" + imei;
 		String ret = get(url);
 		return ret;
 	}
+	*/
 	
 	public String login(String imei) {
 		System.out.println("-------------------HttpMgr.login---------------------");
@@ -69,9 +71,10 @@ public class HttpMgr {
 		return ret;
 	}
 	
+	/*
 	public String getLoginInfo(String token) {
 		System.out.println("-------------------HttpMgr.getLoginInfo---------------------");
-		String url = token + "/QM_Users/GetLoginInfoByUserId";
+		String url = token + "/QM_Users/GS";
 		String ret = get(url);
 		return ret;
 	}
@@ -88,24 +91,21 @@ public class HttpMgr {
 		String ret = get(url);
 		return ret;
 	}
+	*/
 	
-	public String startSchoolRun(String token, float lat, float lng) {
+	public String startSchoolRun(String token, float lat, float lng, int len) {
 		System.out.println("-------------------HttpMgr.startSchoolRun---------------------");
 		String url = new StringBuilder(token)
-				.append("/QM_Runs/StartRunForSchool")
-				.append("?Lat=").append(lat)
-				.append("&Lng=").append(lng)
-				.append("&RunType=").append("1")
-				.append("&RunMode=").append("1")
-				.append("&FUserId=").append("0")
-				.append("&Level_Length=").append("2000")
-				.append("&IsSchool=").append("1")
+				.append("/QM_Runs/SRS")
+				.append("?S1=").append(lat)
+				.append("&S2=").append(lng)
+				.append("&S3=").append(len)
 				.toString();
 		String ret = get(url);
 		return ret;
 	}
 	
-	public String generateKey() {
+	public static String generateKey() {
 		String tab = "abcdefghijklmnopqrstuvwxyz";
 		String key = "";
 		Random random = new Random();
@@ -117,7 +117,7 @@ public class HttpMgr {
 		return key;
 	}
 	
-	public String encrypt(int num, String key) {
+	public static String encrypt(int num, String key) {
 		String str = String.valueOf(num);
 		String val = "";
 		for (int i = 0; i < str.length(); i++) {
@@ -126,19 +126,30 @@ public class HttpMgr {
 		return val;
 	}
 	
-	public String endSchoolRun(String token, String runId, int scores, int coins, int times, int length) {
+	public static Integer decrypt(String src, String key) {
+		Integer val = 0;
+		for (int i = 0; i < src.length(); i++) {
+			for(int j = 0; j < key.length(); j++)
+			{
+				if(key.charAt(j) == src.charAt(i))
+				{
+					val = val*10 + j;
+					break;
+				}
+			}
+		}
+		return val;
+	}
+	
+	public String endSchoolRun(String token, String runId, int scores, int coins, int time, int length) {
 		System.out.println("-------------------HttpMgr.endSchoolRun---------------------");
 		String key = generateKey();
-		String encryptScores = encrypt(scores, key);
-		String encryptCoins = encrypt(coins, key);
-		String encryptTimes = encrypt(times, key);
+		String encryptTime = encrypt(time, key);
 		String encryptLength = encrypt(length, key);
 		String url = new StringBuilder(token)
-				.append("/QM_Runs/EndRunForSchool")
+				.append("/QM_Runs/ES")
 				.append("?S1=").append(runId)
-				.append("&S2=").append(encryptScores)
-				.append("&S3=").append(encryptCoins)
-				.append("&S4=").append(encryptTimes)
+				.append("&S4=").append(encryptTime)
 				.append("&S5=").append(encryptLength)
 				.append("&S6=").append("")
 				.append("&S7=").append("1")
@@ -181,6 +192,13 @@ public class HttpMgr {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(me.login("29108b15533a45a0b75ce83763e818d9"));
+		//System.out.println(me.login("29108b15533a45a0b75ce83763e818d9"));
+		String encryptTime = "mmo";
+		String encryptLen = "bnny";
+		String key = "nybulgtoqm";
+		Integer time = decrypt(encryptTime, key);
+		Integer len = decrypt(encryptLen, key);
+		System.out.println(time);
+		System.out.println(len);
 	}
 }

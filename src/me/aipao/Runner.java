@@ -94,7 +94,7 @@ public class Runner implements Runnable {
 		}
 		*/
 		
-		result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
+		result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng(), 2000);
 		
 		map = JsonUtil.parse(result);
 		
@@ -123,7 +123,7 @@ public class Runner implements Runnable {
 					LOG.info(msg);
 					System.out.println(msg);
 					
-					result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
+					result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng(), 2000);
 					
 					map = JsonUtil.parse(result);
 					
