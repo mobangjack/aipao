@@ -35,7 +35,7 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'bj', '1314233', '2ea1bc86fc4c4050a36a9126bfdcb770', null, null);
+INSERT INTO `user` VALUES ('1', 'bj', '1314233', '29108b15533a45a0b75ce83763e818d9', null, null);
 
 -- ----------------------------
 -- Table structure for `run`
@@ -64,4 +64,4 @@ CREATE TABLE `run` (
 -- ----------------------------
 -- Records of run
 -- ----------------------------
-INSERT INTO `run` VALUES ('2ea1bc86fc4c4050a36a9126bfdcb770', null, null, null, '99', '30.545273', '114.365715', '30.544746', '114.365715', '5000', '2000', '540', '2000', null, null, null);
+INSERT INTO `run` VALUES ('29108b15533a45a0b75ce83763e818d9', null, null, null, '99', '30.545273', '114.365715', '30.544746', '114.365715', '5000', '2000', '540', '2000', null, null, null);

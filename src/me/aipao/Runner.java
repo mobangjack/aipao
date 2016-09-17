@@ -79,6 +79,7 @@ public class Runner implements Runnable {
 		
 		Integer userId = (Integer) data.get("UserId");
 		
+		/*
 		result = HttpMgr.me.setLastLatLng(token, userId, run.getFieldId(), run.getLastLat(), run.getLastLng());
 		
 		map = JsonUtil.parse(result);
@@ -91,6 +92,7 @@ public class Runner implements Runnable {
 			System.out.println(msg);
 			return false;
 		}
+		*/
 		
 		result = HttpMgr.me.startSchoolRun(token, run.getLat(), run.getLng());
 		
